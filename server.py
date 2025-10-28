@@ -5,7 +5,7 @@ app = Flask(__name__)
 TESTER_FILE = "SurgeTester.java"
 RUN_TIMEOUT = 10  # seconds
 
-# Simple CORS so GitHub Pages can call this API
+# Simple CORS so GitHub Pages (or any static host) can call this API
 @app.after_request
 def add_cors(resp):
     resp.headers["Access-Control-Allow-Origin"] = "*"
@@ -63,7 +63,41 @@ def run_tests():
 
 @app.get("/")
 def index():
-    return "Backend OK"
+    # Simple paste page that posts to /run
+    return """
+<!doctype html>
+<title>TCSS 142 – Project 2 Paste Tester</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{font-family:Arial, sans-serif; max-width:900px; margin:24px auto; padding:0 16px;}
+  h1{font-size:20px;margin:0 0 8px}
+  p{color:#555;margin:0 0 12px}
+  textarea{width:100%; height:320px; font-family:monospace; font-size:14px; padding:10px; border:1px solid #ccc; border-radius:8px;}
+  button{margin-top:10px; padding:10px 16px; border:0; border-radius:8px; background:#4a67d6; color:#fff; cursor:pointer}
+  button:hover{background:#3451b3}
+  pre{background:#111;color:#eee;padding:12px;white-space:pre-wrap;border-radius:8px;margin-top:14px}
+</style>
+<h1>Project 2 – Paste Tester</h1>
+<p>Paste your <b>SurgeSimulator.java</b> and click Run. This compiles with an internal tester and shows the results.</p>
+<textarea id="code" placeholder="Paste your code here..."></textarea><br>
+<button onclick="runTests()">Run Tests</button>
+<pre id="out"></pre>
+<script>
+async function runTests(){
+  const out=document.getElementById('out');
+  out.textContent='Running...';
+  const code=document.getElementById('code').value;
+  try{
+    const res=await fetch('/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});
+    out.textContent=await res.text();
+  }catch(e){
+    out.textContent='Error contacting server.';
+  }
+}
+</script>
+"""
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    # Respect $PORT for local/dev; Render uses gunicorn with $PORT from Dockerfile
+    port = int(os.environ.get("PORT", "8080"))
+    app.run(host="0.0.0.0", port=port)
