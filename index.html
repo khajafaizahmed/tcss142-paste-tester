@@ -46,9 +46,10 @@
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
       color:var(--ink);
-      background: radial-gradient(1200px 800px at 80% -20%, rgba(122,162,255,.25), transparent 60%),
-                  radial-gradient(900px 700px at -10% 20%, rgba(159,122,255,.25), transparent 60%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 800px at 80% -20%, rgba(122,162,255,.25), transparent 60%),
+        radial-gradient(900px 700px at -10% 20%, rgba(159,122,255,.25), transparent 60%),
+        var(--bg);
       overflow-x:hidden;
     }
 
@@ -66,7 +67,7 @@
       z-index:0; pointer-events:none; animation: drift 18s ease-in-out infinite alternate;
       transform: translate3d(0,0,0);
     }
-    @keyframes drift{ 
+    @keyframes drift{
       0%{ transform: translate3d(0,-20px,0) scale(1) }
       100%{ transform: translate3d(0,20px,0) scale(1.04) }
     }
@@ -84,22 +85,15 @@
       -webkit-background-clip:text; background-clip:text; color:transparent;
       font-weight:800;
     }
-    h1{
-      margin:14px 0 8px; font-size: clamp(28px, 4vw, 44px); letter-spacing:.2px;
-    }
-    .sub{
-      margin:0; opacity:.9; font-size: clamp(14px, 2vw, 16px);
-    }
-    .credit{
-      margin-top:8px; font-size:13px; color:var(--muted);
-    }
+    h1{ margin:14px 0 8px; font-size: clamp(28px, 4vw, 44px); letter-spacing:.2px; }
+    .sub{ margin:0; opacity:.9; font-size: clamp(14px, 2vw, 16px); }
+    .credit{ margin-top:8px; font-size:13px; color:var(--muted); }
 
     /* Shell */
     .wrap{
       max-width:1100px; margin:18px auto 60px; padding:0 20px;
       display:grid; grid-template-columns: 1fr; gap:18px;
     }
-
     .card{
       background: var(--panel);
       border: 1px solid var(--panel-border);
@@ -109,21 +103,12 @@
     }
 
     /* Editor section */
-    .grid{
-      display:grid; grid-template-columns: 1fr; gap:16px;
-    }
-    @media(min-width:980px){
-      .grid{ grid-template-columns: 1fr 1fr; }
-    }
-
     .section-head{
       display:flex; align-items:center; justify-content:space-between;
       padding:16px 18px 0;
     }
     .section-head b{font-size:14px}
-    .tools{
-      display:flex; align-items:center; gap:8px;
-    }
+    .tools{ display:flex; align-items:center; gap:8px; }
     .tbtn{
       padding:6px 10px; font-size:12px;
       border:1px solid var(--panel-border); border-radius:8px;
@@ -131,13 +116,9 @@
       color:var(--ink); cursor:pointer;
     }
     .tbtn:hover{filter:brightness(1.05)}
-    .theme{
-      width:38px; height:32px; display:grid; place-items:center;
-    }
+    .theme{ width:38px; height:32px; display:grid; place-items:center; }
 
-    .editor{
-      padding:12px 0 0;
-    }
+    .editor{ padding:12px 0 0; }
     .codebox{
       display:grid; grid-template-columns: auto 1fr;
       border-top:1px solid var(--panel-border);
@@ -164,10 +145,7 @@
       color-scheme: dark;
     }
 
-    .bar{
-      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
-      padding:12px 14px;
-    }
+    .bar{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:12px 14px; }
     .btn{
       appearance:none; border:0; cursor:pointer; border-radius:10px;
       padding:10px 16px; font-weight:700; letter-spacing:.2px;
@@ -209,9 +187,7 @@
       box-shadow: inset 0 10px 40px rgba(0,0,0,.35);
       font: 13.5px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
-    .console-tools{
-      display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-top:8px;
-    }
+    .console-tools{ display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-top:8px; }
     .tiny{font-size:12px; padding:6px 10px; border-radius:8px}
 
     /* Footer */
@@ -266,7 +242,7 @@
     <section class="card console">
       <div class="section-head" style="padding:0 0 10px 0;">
         <b>Output</b>
-        <span class="meta">Shows the last  run</span>
+        <span class="meta">Shows the last run</span>
       </div>
       <div class="screen" id="out"><span style="opacity:.65">Waiting for input…</span></div>
       <div class="console-tools">
@@ -303,7 +279,7 @@
     const themeBtn = document.getElementById("themeBtn");
     const exampleBtn = document.getElementById("exampleBtn");
 
-    // Restore draft
+    // draft restore
     codeEl.value = localStorage.getItem("p2_code") || "";
     updateGutter(); updateLen();
 
@@ -311,26 +287,21 @@
       statusText.textContent = text;
       dot.className = "dot " + (kind || "");
     }
-
     function updateLen(){
       const bytes = new TextEncoder().encode(codeEl.value).length;
       lenMeta.textContent = bytes ? `Size: ${bytes.toLocaleString()} bytes` : "";
     }
-
     function updateGutter(){
       const lines = codeEl.value.split("\n").length || 1;
       let s = "";
       for (let i=1;i<=lines;i++){ s += i + "\n"; }
       gutter.textContent = s.trimEnd() || "1";
     }
-
     codeEl.addEventListener("input", () => {
       localStorage.setItem("p2_code", codeEl.value);
       updateGutter(); updateLen();
     });
-    codeEl.addEventListener("scroll", () => {
-      gutter.scrollTop = codeEl.scrollTop;
-    });
+    codeEl.addEventListener("scroll", () => { gutter.scrollTop = codeEl.scrollTop; });
 
     clearBtn.addEventListener("click", () => {
       codeEl.value = "";
@@ -339,10 +310,7 @@
       out.textContent = "Waiting for input…";
       setStatus("", "Idle");
     });
-
-    clearOutBtn.addEventListener("click", () => {
-      out.textContent = "";
-    });
+    clearOutBtn.addEventListener("click", () => { out.textContent = ""; });
 
     copyBtn.addEventListener("click", async () => {
       try{
@@ -356,17 +324,21 @@
     });
 
     themeBtn.addEventListener("click", () => {
-      const current = document.documentElement.style.getPropertyValue('--bg');
-      // quick toggle by flipping body class for demo purpose
+      // quick toggle hook if you want to expand themes later
       document.body.classList.toggle("light");
     });
 
     exampleBtn.addEventListener("click", () => {
-      if(codeEl.value.trim()) return;
       const sample = `public class SurgeSimulator {
-    }`;
-      codeEl.value = sample;
-      localStorage.setItem("p2_code", sample);
+}`;
+      const has = codeEl.value.trim().length > 0;
+      const choice = has ? confirm("Replace existing code with a starter template?") : true;
+      if (!choice) {
+        codeEl.value += (codeEl.value.endsWith("\n") ? "" : "\n") + sample;
+      } else {
+        codeEl.value = sample;
+      }
+      localStorage.setItem("p2_code", codeEl.value);
       updateGutter(); updateLen();
     });
 
@@ -391,15 +363,10 @@
         const text = await res.text();
         out.textContent = text;
 
-        if (text.includes("All checks passed")) {
-          setStatus("ok","All checks passed");
-        } else if (text.toLowerCase().includes("compilation failed")) {
-          setStatus("err","Compilation failed");
-        } else if (text.toLowerCase().includes("timed out")) {
-          setStatus("warn","Timed out");
-        } else {
-          setStatus("warn","Completed");
-        }
+        if (text.includes("All checks passed")) setStatus("ok","All checks passed");
+        else if (text.toLowerCase().includes("compilation failed")) setStatus("err","Compilation failed");
+        else if (text.toLowerCase().includes("timed out")) setStatus("warn","Timed out");
+        else setStatus("warn","Completed");
       } catch {
         out.textContent = "Network error. Try again.";
         setStatus("err","Network error");
@@ -409,7 +376,7 @@
       }
     });
 
-    // Pause progress meter by default
+    // pause progress meter by default
     meter.style.animationPlayState = "paused";
   </script>
 </body>
