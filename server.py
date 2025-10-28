@@ -1,5 +1,5 @@
+from flask import Flask, request, Response, send_from_directory
 import os, tempfile, subprocess, shutil, re
-from flask import Flask, request, Response
 
 app = Flask(__name__)
 
@@ -91,7 +91,8 @@ def healthz():
 # --- Landing Page ---
 @app.get("/")
 def index():
-    return "Backend OK — SurgeTester ready 🧩"
+    # serves ./index.html
+    return send_from_directory(".", "index.html")
 
 
 if __name__ == "__main__":
