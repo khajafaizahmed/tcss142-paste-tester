@@ -21,7 +21,7 @@
       --code-fg:#e6ebff;
       --radius:16px;
       --shadow:0 16px 40px rgba(0,0,0,.35);
-      --loader-speed: 1.3s;
+      --loader-speed:1.3s;
     }
 
     *{box-sizing:border-box}
@@ -72,6 +72,12 @@
       background:var(--code-bg); color:var(--code-fg);
       border:0; outline:none;
       font:13.5px/1.55 ui-monospace,monospace;
+      white-space:pre;             /* soft wrap off by default */
+      overflow-wrap:normal;
+    }
+    textarea.wrap{
+      white-space:pre-wrap;        /* soft wrap on */
+      overflow-wrap:anywhere;
     }
 
     .bar{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:12px 14px }
@@ -86,11 +92,10 @@
     .dot{ width:8px; height:8px; border-radius:50%; background:var(--muted) }
     .dot.ok{ background:var(--ok) } .dot.warn{ background:var(--warn) } .dot.err{ background:var(--err) }
 
-    /* Loader: shimmer that only moves LEFT -> RIGHT while running */
-    .meter{ position:relative; flex:1; min-width:120px; height:6px; border-radius:999px; overflow:hidden; background:rgba(255,255,255,.08); }
+    .meter{ position:relative; flex:1; min-width:120px; height:6px; border-radius:999px; overflow:hidden; background:rgba(255,255,255,.08) }
     .meter .fill{
       position:absolute; inset:0;
-      width:38%; /* visual chunk size */
+      width:38%;
       opacity:.9;
       border-radius:999px;
       background:
@@ -102,20 +107,16 @@
       background-size:220% 100%, 100% 100%;
       background-position:-200% 0, 0 0;
       animation: shimmer var(--loader-speed) linear infinite;
-      animation-play-state: paused;           /* default paused */
-      transform: translateX(-120%);           /* parked off-screen */
+      animation-play-state: paused;
+      transform: translateX(-120%);
     }
-    .meter.running .fill{
-      animation-play-state: running;
-      transform: translateX(0);               /* slides in once, then only shimmer moves */
-    }
+    .meter.running .fill{ animation-play-state: running; transform: translateX(0) }
     @keyframes shimmer{
       0%   { background-position:-200% 0, 0 0 }
       100% { background-position:  200% 0, 0 0 }
     }
-    /* Accessibility: honor reduced motion */
     @media (prefers-reduced-motion: reduce){
-      .meter .fill{ animation: none; background:linear-gradient(90deg,var(--accent),var(--accent-2)); opacity:.6 }
+      .meter .fill{ animation:none; background:linear-gradient(90deg,var(--accent),var(--accent-2)); opacity:.6 }
       .meter.running .fill{ opacity:.95 }
     }
 
@@ -132,6 +133,9 @@
     footer{ max-width:1100px; margin:40px auto; padding:0 20px; color:var(--muted); font-size:14px }
     .foot-card{ background:rgba(255,255,255,.04); border:1px solid var(--panel-border); border-radius:12px; padding:14px 16px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px }
     a{ color:var(--accent); text-decoration:none } a:hover{ text-decoration:underline }
+
+    .kbd{ font:12px/1; padding:4px 6px; border-radius:6px; background:rgba(255,255,255,.08); border:1px solid var(--panel-border) }
+    .shortcuts{ display:grid; gap:6px; font-size:12px; margin-top:10px }
   </style>
 </head>
 <body>
@@ -162,7 +166,6 @@
 
         <span class="chip"><i class="dot" id="dot"></i><span id="statusText">Idle</span></span>
 
-        <!-- Meter with shimmer that doesn't wobble -->
         <div class="meter" id="meter"><div class="fill"></div></div>
 
         <span class="meta" id="lenMeta"></span>
@@ -179,7 +182,16 @@
 
   <footer>
     <div class="foot-card">
-      <div>Need help? Contact <b>Faiz Ahmed</b> (<a href="mailto:faizahm@uw.edu">faizahm@uw.edu</a>)</div>
+      <div>
+        Need help? Contact <b>Faiz Ahmed</b> (<a href="mailto:faizahm@uw.edu">faizahm@uw.edu</a>)
+        <div class="shortcuts">
+          <div><span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">Enter</span> — run tests</div>
+          <div><span class="kbd">Esc</span> — clear code and output • <span class="kbd">Shift</span> + <span class="kbd">Esc</span> — clear output only</div>
+          <div><span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">I</span> — insert template • <span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">L</span> — clear</div>
+          <div><span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">S</span> — save to browser • <span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">O</span> — load</div>
+          <div><span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">W</span> — toggle soft wrap</div>
+        </div>
+      </div>
       <div>If tests hang, check for infinite loops or very heavy printing.</div>
     </div>
   </footer>
@@ -195,6 +207,7 @@
     const lenMeta  = document.getElementById("lenMeta");
     const example  = document.getElementById("exampleBtn");
     const meter    = document.getElementById("meter");
+    const LS_KEY   = "tcss142_p2_surgesim_code";
 
     // --- Utils ---
     function setStatus(kind, text){
@@ -205,7 +218,7 @@
       const lines = (codeEl.value.match(/\n/g)||[]).length + 1;
       let s = "";
       for(let i=1;i<=lines;i++) s += i + "\n";
-      gutter.textContent = s; // keep trailing newline so heights match
+      gutter.textContent = s;
       gutter.scrollTop = codeEl.scrollTop;
     }
     function updateLen(){
@@ -216,24 +229,32 @@
       if(on) meter.classList.add("running");
       else   meter.classList.remove("running");
     }
-
-    // --- Events ---
-    codeEl.addEventListener("input",()=>{ updateGutter(); updateLen(); });
-    codeEl.addEventListener("scroll",()=>{ gutter.scrollTop = codeEl.scrollTop; });
-    clearBtn.addEventListener("click",()=>{
-      codeEl.value = ""; updateGutter(); updateLen();
+    function clearAll(){
+      if(codeEl.value.trim()){
+        const ok = confirm("Clear editor and output?");
+        if(!ok) return;
+      }
+      codeEl.value = "";
+      updateGutter(); updateLen();
       out.textContent = "Waiting for input…";
-      setStatus("", "Idle"); setRunning(false);
-    });
-
-    example.addEventListener("click",()=>{
+      setStatus("", "Idle");
+      setRunning(false);
+      saveToLS();
+    }
+    function clearOutputOnly(){
+      out.textContent = "Waiting for input…";
+      setStatus("", "Idle");
+      setRunning(false);
+    }
+    function insertTemplate(){
       const tpl = `public class SurgeSimulator {
 }`;
       if(codeEl.value.trim() && !confirm("Replace existing code with a template?")) return;
-      codeEl.value = tpl; updateGutter(); updateLen();
-    });
-
-    runBtn.addEventListener("click", async ()=>{
+      codeEl.value = tpl;
+      updateGutter(); updateLen();
+      saveToLS();
+    }
+    async function runTests(){
       const code = codeEl.value.trim();
       if(!code){
         setStatus("warn","No code");
@@ -242,25 +263,87 @@
       }
       setStatus("warn","Running"); setRunning(true);
       out.textContent = "Compiling and running…";
+      saveToLS();
 
       try{
-        const res  = await fetch("/run", { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify({ code }) });
+        const res  = await fetch("/run", {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body:JSON.stringify({ code })
+        });
         const text = await res.text();
         out.textContent = text;
 
-        if (text.includes("All checks passed"))      setStatus("ok","All checks passed");
+        if (text.includes("All checks passed")) setStatus("ok","All checks passed");
         else if (text.includes("Compilation failed")) setStatus("err","Compilation failed");
         else if (text.toLowerCase().includes("timed out")) setStatus("warn","Timed out");
         else setStatus("warn","Completed");
-      }catch(e){
+      }catch{
         out.textContent = "Network error.";
         setStatus("err","Network error");
       }finally{
         setRunning(false);
       }
+    }
+
+    // Local Storage
+    function saveToLS(){ try{ localStorage.setItem(LS_KEY, codeEl.value) }catch{} }
+    function loadFromLS(){
+      try{
+        const v = localStorage.getItem(LS_KEY);
+        if(v != null){ codeEl.value = v; updateGutter(); updateLen(); }
+      }catch{}
+    }
+
+    // --- Events ---
+    codeEl.addEventListener("input",()=>{ updateGutter(); updateLen(); saveToLS(); });
+    codeEl.addEventListener("scroll",()=>{ gutter.scrollTop = codeEl.scrollTop; });
+    clearBtn.addEventListener("click",clearAll);
+    example.addEventListener("click",insertTemplate);
+    runBtn.addEventListener("click",runTests);
+
+    // Keyboard shortcuts (Windows/Linux Ctrl, macOS Cmd)
+    window.addEventListener("keydown", (e)=>{
+      const mod = e.ctrlKey || e.metaKey;
+
+      // Run: Ctrl/Cmd + Enter
+      if(mod && e.key === "Enter"){
+        e.preventDefault(); runTests(); return;
+      }
+      // Clear: Esc, or Ctrl/Cmd + L
+      if(e.key === "Escape" && !e.shiftKey){
+        e.preventDefault(); clearAll(); return;
+      }
+      if(mod && (e.key.toLowerCase() === "l")){
+        e.preventDefault(); clearAll(); return;
+      }
+      // Clear output only: Shift + Esc
+      if(e.key === "Escape" && e.shiftKey){
+        e.preventDefault(); clearOutputOnly(); return;
+      }
+      // Insert template: Ctrl/Cmd + I
+      if(mod && e.key.toLowerCase() === "i"){
+        e.preventDefault(); insertTemplate(); return;
+      }
+      // Save to LS: Ctrl/Cmd + S
+      if(mod && e.key.toLowerCase() === "s"){
+        e.preventDefault(); saveToLS(); setStatus("ok","Saved"); return;
+      }
+      // Load from LS: Ctrl/Cmd + O
+      if(mod && e.key.toLowerCase() === "o"){
+        e.preventDefault(); loadFromLS(); setStatus("ok","Loaded"); return;
+      }
+      // Toggle soft wrap: Ctrl/Cmd + W
+      if(mod && e.key.toLowerCase() === "w"){
+        e.preventDefault();
+        codeEl.classList.toggle("wrap");
+        setStatus("", codeEl.classList.contains("wrap") ? "Wrap on" : "Wrap off");
+        return;
+      }
     });
 
     // Init
+    loadFromLS();
     updateGutter(); updateLen(); setRunning(false);
   </script>
 </body>
