@@ -176,16 +176,6 @@
 
     exampleBtn.addEventListener("click",()=>{
       const sample=`public class SurgeSimulator {
-    public static final double PER_MILE_RATE = 1.50;
-    public static String classifySurge(double m){
-        if(m < 1.20) return "Normal";
-        else if(m < 1.60) return "Moderate Surge";
-        else return "High Surge";
-    }
-    public static double computeTotalFare(double base, double miles, double surge){
-        double trip = base + PER_MILE_RATE * miles;
-        return Math.round(trip * surge * 100.0)/100.0;
-    }
 }`;
       const has=codeEl.value.trim().length>0;
       const choice=has?confirm("Replace existing code with template?"):true;
