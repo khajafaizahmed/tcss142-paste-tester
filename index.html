@@ -1,34 +1,246 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>TCSS 142 – Project 2 Tester</title>
-    <style>
-      body { font-family: Arial; background:#f6f7fb; text-align:center; padding:40px; }
-      textarea { width:90%; max-width:900px; height:300px; font-family:monospace; font-size:14px; padding:10px; }
-      button { margin-top:10px; padding:10px 20px; border:0; background:#4a67d6; color:white; border-radius:8px; cursor:pointer; }
-      pre { background:#111; color:#eee; padding:15px; white-space:pre-wrap; text-align:left; margin-top:20px; width:90%; max-width:900px; margin:auto; }
-    </style>
-  </head>
-  <body>
-    <h1>TCSS 142 – Project 2 Paste Tester</h1>
-    <p>Paste your <b>SurgeSimulator.java</b> code and click Run.</p>
-    <textarea id="code" placeholder="Paste your code here..."></textarea><br />
-    <button onclick="run()">Run Tests</button>
-    <pre id="out"></pre>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TCSS 142 - Project 2 Tester</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --ink:#0f172a;
+      --muted:#6b7280;
+      --accent:#4a67d6;
+      --accent-hover:#3451b3;
+      --border:#e4e7ee;
+      --code-bg:#0b1020;
+      --code-fg:#e5e7eb;
+      --good:#10b981;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--ink);
+      background:var(--bg);
+    }
+    .wrap{
+      max-width:980px;
+      margin:36px auto;
+      padding:0 16px;
+    }
+    header{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:18px;
+    }
+    .logo{
+      width:44px;height:44px;border-radius:12px;
+      background:linear-gradient(135deg, var(--accent), #8aa2ff);
+      display:grid;place-items:center;color:#fff;font-weight:700;
+      box-shadow:0 6px 20px rgba(74,103,214,.25);
+    }
+    h1{font-size:22px; margin:0}
+    .sub{color:var(--muted); margin-top:2px; font-size:14px}
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:18px;
+      box-shadow:0 8px 24px rgba(16,24,40,.04);
+    }
+
+    .row{display:flex; flex-direction:column; gap:12px}
+
+    textarea{
+      width:100%;
+      min-height:320px;
+      resize:vertical;
+      padding:12px 12px 12px 14px;
+      font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size:14px; line-height:1.35;
+      border:1px solid var(--border);
+      border-radius:12px;
+      outline:none;
+      background:#fbfcff;
+    }
+    textarea:focus{border-color:#c4ccf5; box-shadow:0 0 0 3px rgba(74,103,214,.18)}
+
+    .actions{
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:flex-start;
+    }
+    button{
+      appearance:none; border:0; cursor:pointer;
+      background:var(--accent); color:#fff; font-weight:600;
+      padding:10px 16px; border-radius:10px;
+      transition:transform .05s ease, background .15s ease;
+    }
+    button:hover{background:var(--accent-hover)}
+    button:active{transform:translateY(1px)}
+    button[disabled]{opacity:.6; cursor:not-allowed}
+
+    .meta{color:var(--muted); font-size:13px}
+    .status{
+      font-size:13px; padding:6px 10px; border-radius:8px;
+      border:1px solid var(--border); background:#fafbff;
+    }
+    .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;background:var(--muted)}
+    .dot.good{background:var(--good)}
+    .dot.warn{background:var(--warn)}
+    .dot.bad{background:var(--bad)}
+
+    pre#out{
+      margin-top:14px;
+      background:var(--code-bg);
+      color:var(--code-fg);
+      padding:14px;
+      border-radius:12px;
+      white-space:pre-wrap;
+      overflow-wrap:anywhere;
+      border:1px solid #151b33;
+      min-height:80px;
+    }
+
+    footer{
+      margin-top:22px;
+      padding:14px 16px;
+      background:#f0f2fa;
+      border:1px solid var(--border);
+      border-radius:12px;
+      color:#374151;
+      font-size:14px;
+    }
+    a{color:var(--accent); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .kbd{
+      font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      background:#eef1ff; border:1px solid #d7dbff; color:#2b3a8a;
+      padding:2px 6px; border-radius:6px; font-size:12px;
+    }
+
+    @media (max-width:560px){
+      .actions{gap:8px}
+      button{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">P2</div>
+      <div>
+        <h1>TCSS 142 - Project 2 Tester</h1>
+        <div class="sub">Instructor: Professor Xutong Liu · TA: Faiz Ahmed</div>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="row">
+        <p class="sub" style="margin:0 0 4px;">
+          Paste your <b>SurgeSimulator.java</b> code below and click <b>Run Tests</b>.
+          Your code is compiled against an internal oracle and the summary appears below.
+        </p>
+
+        <textarea id="code" placeholder="Paste your SurgeSimulator.java here..."></textarea>
+
+        <div class="actions">
+          <button id="runBtn" onclick="runTests()">Run Tests</button>
+          <button id="clearBtn" onclick="clearCode()" style="background:#eef1ff; color:#2b3a8a;">Clear</button>
+          <span class="status" id="status"><span class="dot" id="dot"></span><span id="statusText">Idle</span></span>
+          <span class="meta" id="lenMeta"></span>
+        </div>
+
+        <pre id="out"><span style="color:#9aa4c2">Waiting for input...</span></pre>
+      </div>
+    </div>
+
+    <footer>
+      <div><b>Need help?</b> If you have any trouble with this page or the tester, contact
+        <b>Faiz Ahmed</b> at
+        <a href="mailto:faizahm@uw.edu">faizahm@uw.edu</a>.
+      </div>
+      <div style="margin-top:6px; color:#6b7280;">
+        Tip: if you see a timeout, check for infinite loops or heavy printing, then try again.
+        You can also copy the output with <span class="kbd">Ctrl/Cmd + A</span> then <span class="kbd">Ctrl/Cmd + C</span>.
+      </div>
+    </footer>
+  </div>
 
   <script>
-    async function run() {
-      const out = document.getElementById("out");
-      out.textContent = "Running...";
-      const code = document.getElementById("code").value;
-      const res = await fetch("/run", {           <!-- relative path -->
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code })
-      });
-      out.textContent = await res.text();
+    const out    = document.getElementById("out");
+    const codeEl = document.getElementById("code");
+    const runBtn = document.getElementById("runBtn");
+    const dot    = document.getElementById("dot");
+    const statusText = document.getElementById("statusText");
+    const lenMeta = document.getElementById("lenMeta");
+
+    // Restore last paste so students don't lose work on refresh
+    codeEl.value = localStorage.getItem("p2_paste") || "";
+    updateLen();
+
+    codeEl.addEventListener("input", () => {
+      localStorage.setItem("p2_paste", codeEl.value);
+      updateLen();
+    });
+
+    function setStatus(kind, text){
+      statusText.textContent = text;
+      dot.className = "dot " + (kind || "");
+    }
+
+    function updateLen(){
+      const bytes = new TextEncoder().encode(codeEl.value).length;
+      lenMeta.textContent = bytes ? `Size: ${bytes.toLocaleString()} bytes` : "";
+    }
+
+    function clearCode(){
+      codeEl.value = "";
+      localStorage.removeItem("p2_paste");
+      out.textContent = "Waiting for input...";
+      updateLen();
+      setStatus("", "Idle");
+    }
+
+    async function runTests(){
+      const code = codeEl.value.trim();
+      if(!code){
+        out.textContent = "Paste your SurgeSimulator.java first.";
+        setStatus("warn", "No code");
+        return;
+      }
+      runBtn.disabled = true;
+      setStatus("warn", "Running...");
+      out.textContent = "Compiling and running...";
+
+      try{
+        const res = await fetch("/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code })
+        });
+
+        const text = await res.text();
+        out.textContent = text;
+        if(text.includes("All checks passed")){
+          setStatus("good", "All checks passed");
+        } else if (text.toLowerCase().includes("compilation failed")){
+          setStatus("bad", "Compilation failed");
+        } else if (text.toLowerCase().includes("timed out")){
+          setStatus("warn", "Timed out");
+        } else {
+          setStatus("warn", "Completed");
+        }
+      } catch (e){
+        out.textContent = "Network error. Please try again.";
+        setStatus("bad", "Network error");
+      } finally {
+        runBtn.disabled = false;
+      }
     }
   </script>
-  </body>
+</body>
 </html>
