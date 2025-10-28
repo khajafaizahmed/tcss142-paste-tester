@@ -17,18 +17,18 @@
     <button onclick="run()">Run Tests</button>
     <pre id="out"></pre>
 
-    <script>
-      async function run() {
-        const out = document.getElementById("out");
-        out.textContent = "Running...";
-        const code = document.getElementById("code").value;
-        const res = await fetch("https://YOUR-RENDER-BACKEND.onrender.com/run", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code })
-        });
-        out.textContent = await res.text();
-      }
-    </script>
+  <script>
+    async function run() {
+      const out = document.getElementById("out");
+      out.textContent = "Running...";
+      const code = document.getElementById("code").value;
+      const res = await fetch("/run", {           <!-- relative path -->
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code })
+      });
+      out.textContent = await res.text();
+    }
+  </script>
   </body>
 </html>
