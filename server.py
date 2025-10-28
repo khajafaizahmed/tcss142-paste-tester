@@ -3,7 +3,7 @@ from flask import Flask, request, Response
 
 app = Flask(__name__)
 TESTER_FILE = "SurgeTester.java"
-RUN_TIMEOUT = 10  # seconds
+RUN_TIMEOUT = 30  # seconds
 
 # Simple CORS so GitHub Pages (or any static host) can call this API
 @app.after_request
