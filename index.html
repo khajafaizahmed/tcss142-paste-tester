@@ -26,7 +26,7 @@
     *{box-sizing:border-box;}
     body{
       margin:0;
-      font-family:system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
       color:var(--ink);
       background:
         radial-gradient(1200px 800px at 80% -20%, rgba(122,162,255,.25), transparent 60%),
@@ -59,145 +59,9 @@
     .section-head b{font-size:14px;}
     .tbtn{padding:6px 10px;font-size:12px;border:1px solid var(--panel-border);border-radius:8px;background:rgba(255,255,255,.06);color:var(--ink);cursor:pointer;}
     .tbtn:hover{filter:brightness(1.1);}
-    .theme{width:38px;height:32px;display:grid;place-items:center;}
 
     .codebox{display:grid;grid-template-columns:auto 1fr;border-top:1px solid var(--panel-border);border-bottom:1px solid var(--panel-border);}
     .gutter{
       white-space:pre;
       overflow:hidden;
-      line-height:1.55;
-      background:rgba(255,255,255,.04);
-      border-right:1px solid var(--panel-border);
-      padding:12px 8px;
-      text-align:right;
-      font:12px/1.55 ui-monospace,monospace;
-      color:#93a2c8;
-      user-select:none;
-    }
-    textarea{
-      width:100%;min-height:420px;resize:vertical;
-      padding:12px 14px;
-      background:var(--code-bg);
-      color:var(--code-fg);
-      border:0;outline:none;
-      font:13.5px/1.55 ui-monospace,monospace;
-    }
-
-    .bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;}
-    .btn{
-      border:0;border-radius:10px;padding:10px 16px;
-      background:linear-gradient(90deg,var(--accent),var(--accent-2));
-      color:#fff;font-weight:600;cursor:pointer;
-    }
-    .btn.secondary{background:rgba(255,255,255,.08);color:var(--ink);}
-    .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;font-size:12px;border:1px solid var(--panel-border);border-radius:10px;background:rgba(255,255,255,.06);}
-    .dot{width:8px;height:8px;border-radius:50%;background:var(--muted);}
-    .dot.ok{background:var(--ok)}.dot.warn{background:var(--warn)}.dot.err{background:var(--err)}
-    .meter{flex:1;min-width:100px;height:4px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;}
-    .meter>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transform-origin:left center;animation:pulse 1.6s ease-in-out infinite;}
-    @keyframes pulse{0%{transform:scaleX(.1)}50%{transform:scaleX(.6)}100%{transform:scaleX(.1)}}
-    .meta{font-size:12px;color:var(--muted);}
-    .console{padding:14px;}
-    .screen{background:var(--code-bg);color:var(--code-fg);border-radius:10px;padding:14px;min-height:120px;font:13.5px/1.55 ui-monospace,monospace;white-space:pre-wrap;}
-    footer{max-width:1100px;margin:40px auto;padding:0 20px;color:var(--muted);font-size:14px;}
-    .foot-card{background:rgba(255,255,255,.04);border:1px solid var(--panel-border);border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between;flex-wrap:wrap;}
-    a{color:var(--accent);text-decoration:none;}a:hover{text-decoration:underline;}
-  </style>
-</head>
-<body>
-  <div class="hero">
-    <div class="title">Verified Oracle Tester</div>
-    <h1><span class="grad">TCSS 142</span> Project 2 Tester</h1>
-    <p>Paste <b>SurgeSimulator.java</b> to run automated correctness and boundary tests.</p>
-    <p class="credit">Instructor: Professor Xutong Liu · TA: Faiz Ahmed</p>
-  </div>
-
-  <main class="wrap">
-    <section class="card">
-      <div class="section-head">
-        <b>Editor</b>
-        <div class="tools">
-          <button class="tbtn theme" id="themeBtn">🌗</button>
-          <button class="tbtn" id="exampleBtn">Insert template</button>
-        </div>
-      </div>
-      <div class="codebox">
-        <div class="gutter" id="gutter">1</div>
-        <textarea id="code" spellcheck="false" placeholder="Paste your SurgeSimulator.java here..."></textarea>
-      </div>
-      <div class="bar">
-        <button class="btn" id="runBtn">Run Tests</button>
-        <button class="btn secondary" id="clearBtn">Clear</button>
-        <span class="chip"><i class="dot" id="dot"></i><span id="statusText">Idle</span></span>
-        <div class="meter"><i id="meterFill" style="transform:scaleX(.08)"></i></div>
-        <span class="meta" id="lenMeta"></span>
-      </div>
-    </section>
-
-    <section class="card console">
-      <div class="section-head" style="padding:0 0 10px 0;"><b>Output</b><span class="meta">Shows the last run</span></div>
-      <div class="screen" id="out">Waiting for input…</div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="foot-card">
-      <div>Need help? Contact <b>Faiz Ahmed</b> (<a href="mailto:faizahm@uw.edu">faizahm@uw.edu</a>)</div>
-      <div>If tests hang, check for infinite loops or too many print statements.</div>
-    </div>
-  </footer>
-
-  <script>
-    const codeEl=document.getElementById("code");
-    const gutter=document.getElementById("gutter");
-    const runBtn=document.getElementById("runBtn");
-    const clearBtn=document.getElementById("clearBtn");
-    const out=document.getElementById("out");
-    const statusText=document.getElementById("statusText");
-    const dot=document.getElementById("dot");
-    const meter=document.getElementById("meterFill");
-    const lenMeta=document.getElementById("lenMeta");
-    const exampleBtn=document.getElementById("exampleBtn");
-
-    function setStatus(kind,text){statusText.textContent=text;dot.className="dot "+(kind||"");}
-    function updateGutter(){
-      const lines=codeEl.value.split("\n").length||1;
-      let s="";
-      for(let i=1;i<=lines;i++)s+=i+"\n";
-      gutter.textContent=s; // no trimEnd
-    }
-    function updateLen(){
-      const bytes=new TextEncoder().encode(codeEl.value).length;
-      lenMeta.textContent=bytes?`Size: ${bytes.toLocaleString()} bytes`:"";
-    }
-    codeEl.addEventListener("input",()=>{updateGutter();updateLen();});
-    codeEl.addEventListener("scroll",()=>{gutter.scrollTop=codeEl.scrollTop;});
-    clearBtn.addEventListener("click",()=>{codeEl.value="";updateGutter();updateLen();out.textContent="Waiting for input…";setStatus("","Idle");});
-
-    exampleBtn.addEventListener("click",()=>{
-      const sample=`public class SurgeSimulator {
-}`;
-      const has=codeEl.value.trim().length>0;
-      const choice=has?confirm("Replace existing code with template?"):true;
-      codeEl.value=choice?sample:(codeEl.value+"\n"+sample);
-      updateGutter();updateLen();
-    });
-
-    runBtn.addEventListener("click",async()=>{
-      const code=codeEl.value.trim();
-      if(!code){setStatus("warn","No code");out.textContent="Paste your SurgeSimulator.java first.";return;}
-      setStatus("warn","Running");out.textContent="Compiling and running…";
-      try{
-        const res=await fetch("/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({code})});
-        const txt=await res.text();out.textContent=txt;
-        if(txt.includes("All checks passed"))setStatus("ok","All checks passed");
-        else if(txt.includes("Compilation failed"))setStatus("err","Compilation failed");
-        else if(txt.includes("timed out"))setStatus("warn","Timed out");
-        else setStatus("warn","Completed");
-      }catch{out.textContent="Network error.";setStatus("err","Network error");}
-    });
-
-    updateGutter();updateLen();
-  </script>
-</body>
-</html>
+     
