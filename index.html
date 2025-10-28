@@ -1,191 +1,311 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>TCSS 142 - Project 2 Tester</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <title>TCSS 142 · Project 2 Tester</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
   <style>
     :root{
-      --bg:#f6f7fb;
-      --card:#ffffff;
-      --ink:#0f172a;
-      --muted:#6b7280;
-      --accent:#4a67d6;
-      --accent-hover:#3451b3;
-      --border:#e4e7ee;
-      --code-bg:#0b1020;
-      --code-fg:#e5e7eb;
-      --good:#10b981;
-      --warn:#f59e0b;
-      --bad:#ef4444;
+      --bg: #0b1020;
+      --ink: #eaf0ff;
+      --muted: #b5bfdd;
+      --panel: rgba(255,255,255,.06);
+      --panel-border: rgba(255,255,255,.14);
+      --accent: #7aa2ff;
+      --accent-2: #9f7aff;
+      --ok: #2bd67b;
+      --warn: #ffcc4d;
+      --err: #ff5d5d;
+      --code-bg: #0a0f1d;
+      --code-fg: #e6ebff;
+      --shadow: 0 20px 60px rgba(0,0,0,.35);
+      --radius: 16px;
     }
+    @media (prefers-color-scheme: light) {
+      :root{
+        --bg: #f5f7ff;
+        --ink: #0f172a;
+        --muted: #6b7280;
+        --panel: rgba(255,255,255,.9);
+        --panel-border: rgba(8,18,56,.08);
+        --accent: #4a67d6;
+        --accent-2: #8aa2ff;
+        --ok: #12b886;
+        --warn: #f59f00;
+        --err: #e03131;
+        --code-bg: #0b1020;
+        --code-fg: #eaefff;
+        --shadow: 0 18px 44px rgba(17,24,39,.12);
+      }
+    }
+
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
-      font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
       color:var(--ink);
-      background:var(--bg);
+      background: radial-gradient(1200px 800px at 80% -20%, rgba(122,162,255,.25), transparent 60%),
+                  radial-gradient(900px 700px at -10% 20%, rgba(159,122,255,.25), transparent 60%),
+                  var(--bg);
+      overflow-x:hidden;
     }
+
+    /* Hero */
+    .hero{
+      position:relative;
+      padding:64px 20px 24px;
+      text-align:center;
+      isolation:isolate;
+    }
+    .orb{
+      position:absolute; inset:-20% -10% auto -10%;
+      background: conic-gradient(from 180deg at 50% 50%, rgba(122,162,255,.12), rgba(159,122,255,.12), rgba(122,162,255,.12));
+      filter: blur(60px);
+      z-index:0; pointer-events:none; animation: drift 18s ease-in-out infinite alternate;
+      transform: translate3d(0,0,0);
+    }
+    @keyframes drift{ 
+      0%{ transform: translate3d(0,-20px,0) scale(1) }
+      100%{ transform: translate3d(0,20px,0) scale(1.04) }
+    }
+    .title{
+      position:relative; z-index:1;
+      display:inline-flex; align-items:center; gap:12px;
+      padding:10px 16px; border-radius:999px; font-size:12px;
+      background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.06));
+      border:1px solid var(--panel-border);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.18);
+      backdrop-filter: blur(10px);
+    }
+    .grad{
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      font-weight:800;
+    }
+    h1{
+      margin:14px 0 8px; font-size: clamp(28px, 4vw, 44px); letter-spacing:.2px;
+    }
+    .sub{
+      margin:0; opacity:.9; font-size: clamp(14px, 2vw, 16px);
+    }
+    .credit{
+      margin-top:8px; font-size:13px; color:var(--muted);
+    }
+
+    /* Shell */
     .wrap{
-      max-width:980px;
-      margin:36px auto;
-      padding:0 16px;
+      max-width:1100px; margin:18px auto 60px; padding:0 20px;
+      display:grid; grid-template-columns: 1fr; gap:18px;
     }
-    header{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      margin-bottom:18px;
-    }
-    .logo{
-      width:44px;height:44px;border-radius:12px;
-      background:linear-gradient(135deg, var(--accent), #8aa2ff);
-      display:grid;place-items:center;color:#fff;font-weight:700;
-      box-shadow:0 6px 20px rgba(74,103,214,.25);
-    }
-    h1{font-size:22px; margin:0}
-    .sub{color:var(--muted); margin-top:2px; font-size:14px}
 
     .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:18px;
-      box-shadow:0 8px 24px rgba(16,24,40,.04);
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
     }
 
-    .row{display:flex; flex-direction:column; gap:12px}
+    /* Editor section */
+    .grid{
+      display:grid; grid-template-columns: 1fr; gap:16px;
+    }
+    @media(min-width:980px){
+      .grid{ grid-template-columns: 1fr 1fr; }
+    }
 
+    .section-head{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:16px 18px 0;
+    }
+    .section-head b{font-size:14px}
+    .tools{
+      display:flex; align-items:center; gap:8px;
+    }
+    .tbtn{
+      padding:6px 10px; font-size:12px;
+      border:1px solid var(--panel-border); border-radius:8px;
+      background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.06));
+      color:var(--ink); cursor:pointer;
+    }
+    .tbtn:hover{filter:brightness(1.05)}
+    .theme{
+      width:38px; height:32px; display:grid; place-items:center;
+    }
+
+    .editor{
+      padding:12px 0 0;
+    }
+    .codebox{
+      display:grid; grid-template-columns: auto 1fr;
+      border-top:1px solid var(--panel-border);
+      border-bottom:1px solid var(--panel-border);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border-radius: 0 0 var(--radius) var(--radius);
+      overflow:hidden;
+    }
+    .gutter{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border-right:1px solid var(--panel-border);
+      padding:12px 10px; color:#93a2c8; min-width:42px;
+      text-align:right; font: 12px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      user-select:none;
+    }
+    .ta-wrap{position:relative}
     textarea{
-      width:100%;
-      min-height:320px;
-      resize:vertical;
-      padding:12px 12px 12px 14px;
-      font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-      font-size:14px; line-height:1.35;
-      border:1px solid var(--border);
-      border-radius:12px;
-      outline:none;
-      background:#fbfcff;
-    }
-    textarea:focus{border-color:#c4ccf5; box-shadow:0 0 0 3px rgba(74,103,214,.18)}
-
-    .actions{
-      display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:flex-start;
-    }
-    button{
-      appearance:none; border:0; cursor:pointer;
-      background:var(--accent); color:#fff; font-weight:600;
-      padding:10px 16px; border-radius:10px;
-      transition:transform .05s ease, background .15s ease;
-    }
-    button:hover{background:var(--accent-hover)}
-    button:active{transform:translateY(1px)}
-    button[disabled]{opacity:.6; cursor:not-allowed}
-
-    .meta{color:var(--muted); font-size:13px}
-    .status{
-      font-size:13px; padding:6px 10px; border-radius:8px;
-      border:1px solid var(--border); background:#fafbff;
-    }
-    .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;background:var(--muted)}
-    .dot.good{background:var(--good)}
-    .dot.warn{background:var(--warn)}
-    .dot.bad{background:var(--bad)}
-
-    pre#out{
-      margin-top:14px;
-      background:var(--code-bg);
-      color:var(--code-fg);
-      padding:14px;
-      border-radius:12px;
-      white-space:pre-wrap;
-      overflow-wrap:anywhere;
-      border:1px solid #151b33;
-      min-height:80px;
+      width:100%; min-height:420px; resize:vertical;
+      padding:12px 14px 12px 14px;
+      font: 13.5px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color:var(--ink);
+      background: rgba(255,255,255,.04);
+      border:0; outline:none;
+      color-scheme: dark;
     }
 
+    .bar{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+      padding:12px 14px;
+    }
+    .btn{
+      appearance:none; border:0; cursor:pointer; border-radius:10px;
+      padding:10px 16px; font-weight:700; letter-spacing:.2px;
+      color:#fff; background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      box-shadow: 0 10px 30px rgba(122,162,255,.35);
+      transition: transform .06s ease, filter .15s ease;
+    }
+    .btn:hover{filter:brightness(1.05)}
+    .btn:active{transform:translateY(1px)}
+    .btn[disabled]{opacity:.6; cursor:not-allowed}
+    .btn.secondary{
+      color:var(--ink);
+      background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.04));
+      box-shadow:none; border:1px solid var(--panel-border);
+    }
+
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:10px; font-size:12px;
+      border:1px solid var(--panel-border);
+      background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
+    }
+    .dot{width:8px; height:8px; border-radius:50%; background:var(--muted)}
+    .dot.ok{background:var(--ok)} .dot.warn{background:var(--warn)} .dot.err{background:var(--err)}
+
+    .meter{position:relative; height:4px; flex:1; min-width:110px; background:rgba(255,255,255,.08); border-radius:999px; overflow:hidden}
+    .meter > i{position:absolute; inset:0; transform-origin:left center; background: linear-gradient(90deg, var(--accent), var(--accent-2)); opacity:.85; animation: pulse 1.6s ease-in-out infinite}
+    @keyframes pulse{ 0%{transform:scaleX(.08)} 50%{transform:scaleX(.65)} 100%{transform:scaleX(.08)} }
+
+    .meta{color:var(--muted); font-size:12px}
+
+    /* Console */
+    .console{padding:14px}
+    .screen{
+      background: var(--code-bg); color: var(--code-fg);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: 12px; padding: 14px; min-height: 120px;
+      white-space: pre-wrap; overflow-wrap:anywhere;
+      box-shadow: inset 0 10px 40px rgba(0,0,0,.35);
+      font: 13.5px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .console-tools{
+      display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-top:8px;
+    }
+    .tiny{font-size:12px; padding:6px 10px; border-radius:8px}
+
+    /* Footer */
     footer{
-      margin-top:22px;
-      padding:14px 16px;
-      background:#f0f2fa;
-      border:1px solid var(--border);
-      border-radius:12px;
-      color:#374151;
-      font-size:14px;
+      max-width:1100px; margin: 0 auto 80px; padding:0 20px;
+      color:var(--muted); font-size:14px;
     }
-    a{color:var(--accent); text-decoration:none}
-    a:hover{text-decoration:underline}
-    .kbd{
-      font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-      background:#eef1ff; border:1px solid #d7dbff; color:#2b3a8a;
-      padding:2px 6px; border-radius:6px; font-size:12px;
+    .foot-card{
+      padding:14px 16px; border-radius:12px; border:1px solid var(--panel-border); background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
     }
-
-    @media (max-width:560px){
-      .actions{gap:8px}
-      button{width:100%}
-    }
+    a{color:var(--accent); text-decoration:none} a:hover{text-decoration:underline}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="logo">P2</div>
-      <div>
-        <h1>TCSS 142 - Project 2 Tester</h1>
-        <div class="sub">Instructor: Professor Xutong Liu · TA: Faiz Ahmed</div>
-      </div>
-    </header>
-
-    <div class="card">
-      <div class="row">
-        <p class="sub" style="margin:0 0 4px;">
-          Paste your <b>SurgeSimulator.java</b> code below and click <b>Run Tests</b>.
-          Your code is compiled against an internal oracle and the summary appears below.
-        </p>
-
-        <textarea id="code" placeholder="Paste your SurgeSimulator.java here..."></textarea>
-
-        <div class="actions">
-          <button id="runBtn" onclick="runTests()">Run Tests</button>
-          <button id="clearBtn" onclick="clearCode()" style="background:#eef1ff; color:#2b3a8a;">Clear</button>
-          <span class="status" id="status"><span class="dot" id="dot"></span><span id="statusText">Idle</span></span>
-          <span class="meta" id="lenMeta"></span>
-        </div>
-
-        <pre id="out"><span style="color:#9aa4c2">Waiting for input...</span></pre>
-      </div>
-    </div>
-
-    <footer>
-      <div><b>Need help?</b> If you have any trouble with this page or the tester, contact
-        <b>Faiz Ahmed</b> at
-        <a href="mailto:faizahm@uw.edu">faizahm@uw.edu</a>.
-      </div>
-      <div style="margin-top:6px; color:#6b7280;">
-        Tip: if you see a timeout, check for infinite loops or heavy printing, then try again.
-        You can also copy the output with <span class="kbd">Ctrl/Cmd + A</span> then <span class="kbd">Ctrl/Cmd + C</span>.
-      </div>
-    </footer>
+  <div class="hero">
+    <div class="orb"></div>
+    <div class="title">Verified Oracle Tester</div>
+    <h1><span class="grad">TCSS 142</span> Project 2 Tester</h1>
+    <p class="sub">Paste <b>SurgeSimulator.java</b>. Run automated checks for correctness, boundaries, and rounding.</p>
+    <p class="credit">Instructor: Professor Xutong Liu · TA: Faiz Ahmed</p>
   </div>
 
+  <main class="wrap">
+    <section class="card">
+      <div class="section-head">
+        <b>Editor</b>
+        <div class="tools">
+          <button class="tbtn theme" id="themeBtn" title="Toggle theme">🌗</button>
+          <button class="tbtn" id="exampleBtn" title="Insert template">Insert template</button>
+        </div>
+      </div>
+
+      <div class="editor">
+        <div class="codebox">
+          <div class="gutter" id="gutter">1</div>
+          <div class="ta-wrap">
+            <textarea id="code" spellcheck="false" placeholder="Paste your SurgeSimulator.java here..."></textarea>
+          </div>
+        </div>
+
+        <div class="bar">
+          <button class="btn" id="runBtn">Run Tests</button>
+          <button class="btn secondary" id="clearBtn">Clear</button>
+          <span class="chip" id="status"><i class="dot" id="dot"></i><span id="statusText">Idle</span></span>
+          <div class="meter"><i id="meterFill" style="transform:scaleX(.08)"></i></div>
+          <span class="meta" id="lenMeta"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card console">
+      <div class="section-head" style="padding:0 0 10px 0;">
+        <b>Output</b>
+        <span class="meta">Shows the last  run</span>
+      </div>
+      <div class="screen" id="out"><span style="opacity:.65">Waiting for input…</span></div>
+      <div class="console-tools">
+        <button class="tbtn tiny" id="copyBtn">Copy output</button>
+        <button class="tbtn tiny" id="clearOutBtn">Clear output</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot-card">
+      <div>
+        Need help with this site or the tester? Contact <b>Faiz Ahmed</b> at
+        <a href="mailto:faizahm@uw.edu">faizahm@uw.edu</a>.
+      </div>
+      <div class="meta">
+        If you see a timeout, check for infinite loops or heavy printing and try again.
+      </div>
+    </div>
+  </footer>
+
   <script>
-    const out    = document.getElementById("out");
     const codeEl = document.getElementById("code");
+    const gutter = document.getElementById("gutter");
     const runBtn = document.getElementById("runBtn");
-    const dot    = document.getElementById("dot");
+    const clearBtn = document.getElementById("clearBtn");
+    const out = document.getElementById("out");
     const statusText = document.getElementById("statusText");
+    const dot = document.getElementById("dot");
+    const meter = document.getElementById("meterFill");
     const lenMeta = document.getElementById("lenMeta");
+    const copyBtn = document.getElementById("copyBtn");
+    const clearOutBtn = document.getElementById("clearOutBtn");
+    const themeBtn = document.getElementById("themeBtn");
+    const exampleBtn = document.getElementById("exampleBtn");
 
-    // Restore last paste so students don't lose work on refresh
-    codeEl.value = localStorage.getItem("p2_paste") || "";
-    updateLen();
-
-    codeEl.addEventListener("input", () => {
-      localStorage.setItem("p2_paste", codeEl.value);
-      updateLen();
-    });
+    // Restore draft
+    codeEl.value = localStorage.getItem("p2_code") || "";
+    updateGutter(); updateLen();
 
     function setStatus(kind, text){
       statusText.textContent = text;
@@ -197,24 +317,97 @@
       lenMeta.textContent = bytes ? `Size: ${bytes.toLocaleString()} bytes` : "";
     }
 
-    function clearCode(){
-      codeEl.value = "";
-      localStorage.removeItem("p2_paste");
-      out.textContent = "Waiting for input...";
-      updateLen();
-      setStatus("", "Idle");
+    function updateGutter(){
+      const lines = codeEl.value.split("\n").length || 1;
+      let s = "";
+      for (let i=1;i<=lines;i++){ s += i + "\n"; }
+      gutter.textContent = s.trimEnd() || "1";
     }
 
-    async function runTests(){
+    codeEl.addEventListener("input", () => {
+      localStorage.setItem("p2_code", codeEl.value);
+      updateGutter(); updateLen();
+    });
+    codeEl.addEventListener("scroll", () => {
+      gutter.scrollTop = codeEl.scrollTop;
+    });
+
+    clearBtn.addEventListener("click", () => {
+      codeEl.value = "";
+      localStorage.removeItem("p2_code");
+      updateGutter(); updateLen();
+      out.textContent = "Waiting for input…";
+      setStatus("", "Idle");
+    });
+
+    clearOutBtn.addEventListener("click", () => {
+      out.textContent = "";
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      try{
+        await navigator.clipboard.writeText(out.textContent);
+        copyBtn.textContent = "Copied";
+        setTimeout(() => copyBtn.textContent = "Copy output", 900);
+      }catch{
+        copyBtn.textContent = "Copy failed";
+        setTimeout(() => copyBtn.textContent = "Copy output", 900);
+      }
+    });
+
+    themeBtn.addEventListener("click", () => {
+      const current = document.documentElement.style.getPropertyValue('--bg');
+      // quick toggle by flipping body class for demo purpose
+      document.body.classList.toggle("light");
+    });
+
+    exampleBtn.addEventListener("click", () => {
+      if(codeEl.value.trim()) return;
+      const sample = `public class SurgeSimulator {
+    public static final double PER_MILE_RATE = 1.50;
+    public static String classifySurge(double m){
+        if(m < 1.20) return "Normal";
+        else if(m < 1.60) return "Moderate Surge";
+        else return "High Surge";
+    }
+    public static String recommendAction(double m){
+        if(m < 1.20) return "Normal demand - book now.";
+        else if(m < 1.60) return "Moderate surge - book if you are in a hurry.";
+        else return "High surge - consider waiting 10 minutes.";
+    }
+    public static double computeSurgeMultiplier(String t, String w, int d, int drv){
+        double m = 1.0;
+        if("MORNING".equals(t)) m += 0.10;
+        else if("EVENING".equals(t)) m += 0.20;
+        else if("NIGHT".equals(t)) m += 0.15;
+        if("RAIN".equals(w)) m += 0.15;
+        if(d >= 4 && drv <= 2) m += 0.40;
+        else if(d >= 3 && drv <= 3) m += 0.25;
+        else if(d <= 2 && drv >= 4) m -= 0.10;
+        if(m < 1.0) m = 1.0; if(m > 3.0) m = 3.0;
+        return m;
+    }
+    public static double computeTotalFare(double base, double miles, double surge){
+        double trip = base + PER_MILE_RATE * miles;
+        return Math.round(trip * surge * 100.0)/100.0;
+    }
+}`;
+      codeEl.value = sample;
+      localStorage.setItem("p2_code", sample);
+      updateGutter(); updateLen();
+    });
+
+    runBtn.addEventListener("click", async () => {
       const code = codeEl.value.trim();
       if(!code){
+        setStatus("warn","No code");
         out.textContent = "Paste your SurgeSimulator.java first.";
-        setStatus("warn", "No code");
         return;
       }
       runBtn.disabled = true;
-      setStatus("warn", "Running...");
-      out.textContent = "Compiling and running...";
+      setStatus("warn","Running");
+      out.textContent = "Compiling and running…";
+      meter.style.animationPlayState = "running";
 
       try{
         const res = await fetch("/run", {
@@ -222,25 +415,29 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code })
         });
-
         const text = await res.text();
         out.textContent = text;
-        if(text.includes("All checks passed")){
-          setStatus("good", "All checks passed");
-        } else if (text.toLowerCase().includes("compilation failed")){
-          setStatus("bad", "Compilation failed");
-        } else if (text.toLowerCase().includes("timed out")){
-          setStatus("warn", "Timed out");
+
+        if (text.includes("All checks passed")) {
+          setStatus("ok","All checks passed");
+        } else if (text.toLowerCase().includes("compilation failed")) {
+          setStatus("err","Compilation failed");
+        } else if (text.toLowerCase().includes("timed out")) {
+          setStatus("warn","Timed out");
         } else {
-          setStatus("warn", "Completed");
+          setStatus("warn","Completed");
         }
-      } catch (e){
-        out.textContent = "Network error. Please try again.";
-        setStatus("bad", "Network error");
-      } finally {
+      } catch {
+        out.textContent = "Network error. Try again.";
+        setStatus("err","Network error");
+      } finally{
         runBtn.disabled = false;
+        meter.style.animationPlayState = "paused";
       }
-    }
+    });
+
+    // Pause progress meter by default
+    meter.style.animationPlayState = "paused";
   </script>
 </body>
 </html>
