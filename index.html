@@ -72,12 +72,8 @@
       background:var(--code-bg); color:var(--code-fg);
       border:0; outline:none;
       font:13.5px/1.55 ui-monospace,monospace;
-      white-space:pre;             /* soft wrap off by default */
+      white-space:pre;             /* no soft wrap */
       overflow-wrap:normal;
-    }
-    textarea.wrap{
-      white-space:pre-wrap;        /* soft wrap on */
-      overflow-wrap:anywhere;
     }
 
     .bar{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:12px 14px }
@@ -189,7 +185,6 @@
           <div><span class="kbd">Esc</span> — clear code and output • <span class="kbd">Shift</span> + <span class="kbd">Esc</span> — clear output only</div>
           <div><span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">I</span> — insert template • <span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">L</span> — clear</div>
           <div><span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">S</span> — save to browser • <span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">O</span> — load</div>
-          <div><span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">W</span> — toggle soft wrap</div>
         </div>
       </div>
       <div>If tests hang, check for infinite loops or very heavy printing.</div>
@@ -325,21 +320,15 @@
       if(mod && e.key.toLowerCase() === "i"){
         e.preventDefault(); insertTemplate(); return;
       }
-      // Save to LS: Ctrl/Cmd + S
+      // Save: Ctrl/Cmd + S
       if(mod && e.key.toLowerCase() === "s"){
         e.preventDefault(); saveToLS(); setStatus("ok","Saved"); return;
       }
-      // Load from LS: Ctrl/Cmd + O
+      // Load: Ctrl/Cmd + O
       if(mod && e.key.toLowerCase() === "o"){
         e.preventDefault(); loadFromLS(); setStatus("ok","Loaded"); return;
       }
-      // Toggle soft wrap: Ctrl/Cmd + W
-      if(mod && e.key.toLowerCase() === "w"){
-        e.preventDefault();
-        codeEl.classList.toggle("wrap");
-        setStatus("", codeEl.classList.contains("wrap") ? "Wrap on" : "Wrap off");
-        return;
-      }
+      // No Ctrl/Cmd + W binding to avoid closing tab
     });
 
     // Init
