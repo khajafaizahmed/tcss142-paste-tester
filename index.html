@@ -364,34 +364,7 @@
     exampleBtn.addEventListener("click", () => {
       if(codeEl.value.trim()) return;
       const sample = `public class SurgeSimulator {
-    public static final double PER_MILE_RATE = 1.50;
-    public static String classifySurge(double m){
-        if(m < 1.20) return "Normal";
-        else if(m < 1.60) return "Moderate Surge";
-        else return "High Surge";
-    }
-    public static String recommendAction(double m){
-        if(m < 1.20) return "Normal demand - book now.";
-        else if(m < 1.60) return "Moderate surge - book if you are in a hurry.";
-        else return "High surge - consider waiting 10 minutes.";
-    }
-    public static double computeSurgeMultiplier(String t, String w, int d, int drv){
-        double m = 1.0;
-        if("MORNING".equals(t)) m += 0.10;
-        else if("EVENING".equals(t)) m += 0.20;
-        else if("NIGHT".equals(t)) m += 0.15;
-        if("RAIN".equals(w)) m += 0.15;
-        if(d >= 4 && drv <= 2) m += 0.40;
-        else if(d >= 3 && drv <= 3) m += 0.25;
-        else if(d <= 2 && drv >= 4) m -= 0.10;
-        if(m < 1.0) m = 1.0; if(m > 3.0) m = 3.0;
-        return m;
-    }
-    public static double computeTotalFare(double base, double miles, double surge){
-        double trip = base + PER_MILE_RATE * miles;
-        return Math.round(trip * surge * 100.0)/100.0;
-    }
-}`;
+    }`;
       codeEl.value = sample;
       localStorage.setItem("p2_code", sample);
       updateGutter(); updateLen();
