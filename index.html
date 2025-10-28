@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>TCSS 142 – Project 2 Tester</title>
+    <style>
+      body { font-family: Arial; background:#f6f7fb; text-align:center; padding:40px; }
+      textarea { width:90%; max-width:900px; height:300px; font-family:monospace; font-size:14px; padding:10px; }
+      button { margin-top:10px; padding:10px 20px; border:0; background:#4a67d6; color:white; border-radius:8px; cursor:pointer; }
+      pre { background:#111; color:#eee; padding:15px; white-space:pre-wrap; text-align:left; margin-top:20px; width:90%; max-width:900px; margin:auto; }
+    </style>
+  </head>
+  <body>
+    <h1>TCSS 142 – Project 2 Paste Tester</h1>
+    <p>Paste your <b>SurgeSimulator.java</b> code and click Run.</p>
+    <textarea id="code" placeholder="Paste your code here..."></textarea><br />
+    <button onclick="run()">Run Tests</button>
+    <pre id="out"></pre>
+
+    <script>
+      async function run() {
+        const out = document.getElementById("out");
+        out.textContent = "Running...";
+        const code = document.getElementById("code").value;
+        const res = await fetch("https://YOUR-RENDER-BACKEND.onrender.com/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code })
+        });
+        out.textContent = await res.text();
+      }
+    </script>
+  </body>
+</html>
