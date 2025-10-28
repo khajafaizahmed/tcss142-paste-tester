@@ -3,31 +3,61 @@ from flask import Flask, request, Response
 
 app = Flask(__name__)
 TESTER_FILE = "SurgeTester.java"
+RUN_TIMEOUT = 10  # seconds
 
-@app.post("/run")
+# Simple CORS so GitHub Pages can call this API
+@app.after_request
+def add_cors(resp):
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    resp.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS, GET"
+    return resp
+
+@app.route("/run", methods=["POST", "OPTIONS"])
 def run_tests():
+    if request.method == "OPTIONS":
+        return Response(status=204)
+
     data = request.get_json(silent=True) or {}
     code = data.get("code", "")
+
     if "class SurgeSimulator" not in code:
         return Response("Error: Must contain 'class SurgeSimulator'.", 400)
 
+    # Strip package lines to avoid path issues
     code = re.sub(r'^\s*package\s+.*?;\s*', '', code, flags=re.MULTILINE)
 
-    tmp = tempfile.mkdtemp()
+    tmp = tempfile.mkdtemp(prefix="p2_")
     try:
-        open(os.path.join(tmp, "SurgeSimulator.java"), "w").write(code)
+        with open(os.path.join(tmp, "SurgeSimulator.java"), "w", encoding="utf-8") as f:
+            f.write(code)
+
         shutil.copy(TESTER_FILE, os.path.join(tmp, "SurgeTester.java"))
 
-        rc, out, err = subprocess.run(["javac", "SurgeTester.java", "SurgeSimulator.java"],
-                                      cwd=tmp, capture_output=True, text=True).returncode, "", ""
-        if rc != 0:
-            return f"Compilation failed.\n\n{err or out}"
+        # Compile
+        comp = subprocess.run(
+            ["javac", "SurgeTester.java", "SurgeSimulator.java"],
+            cwd=tmp, capture_output=True, text=True, timeout=RUN_TIMEOUT
+        )
+        if comp.returncode != 0:
+            out = comp.stdout.strip()
+            err = comp.stderr.strip()
+            msg = "Compilation failed\n\n"
+            if err: msg += f"STDERR:\n{err}\n\n"
+            if out: msg += f"STDOUT:\n{out}\n"
+            return Response(msg, 200, mimetype="text/plain")
 
-        rc, out, err = subprocess.run(["java", "SurgeTester"],
-                                      cwd=tmp, capture_output=True, text=True).returncode, "", ""
-        return out + ("\n" + err if err else "")
+        # Run
+        run = subprocess.run(
+            ["java", "SurgeTester"],
+            cwd=tmp, capture_output=True, text=True, timeout=RUN_TIMEOUT
+        )
+        out = run.stdout or ""
+        err = run.stderr or ""
+        return Response(out + (("\n" + err) if err else ""), 200, mimetype="text/plain")
+
     except subprocess.TimeoutExpired:
-        return "Timed out."
+        return Response("Execution timed out", 200, mimetype="text/plain")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
