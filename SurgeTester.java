@@ -118,7 +118,7 @@ public class SurgeTester {
         String[] times = {"MORNING","DAY","EVENING","NIGHT"};
         String[] weathers = {"CLEAR","RAIN"};
 
-        int N = 50;; // plenty, but fast
+        int N = 50; // plenty, but fast
         int localPass = 0;
         for (int i = 0; i < N; i++) {
             String t = times[rnd.nextInt(times.length)];
@@ -258,4 +258,5 @@ public class SurgeTester {
         return Math.round(x * 100.0) / 100.0;
     }
 }
+
 
