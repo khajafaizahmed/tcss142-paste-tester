@@ -3,6 +3,102 @@
 <head>
   <meta charset="utf-8" />
   <title>TCSS 142 · Project 2 Tester</title>
+  <title>TCSS 142 · Project 2 Tester</title>
+
+  <!--
+    Fun behavior & easter eggs in this Project 2 tester (SurgeSimulator):
+
+    1) Late-night hero message
+       - In runTests(), the text under the main title switches based on time:
+         • Between 11 PM and 6 AM:
+           "Late night surge testing squad online. Tool by TA Faiz Ahmed."
+         • Otherwise:
+           "Instructor: Professor Xutong Liu · Built and maintained by TA Faiz Ahmed"
+
+    2) Confetti on full pass
+       - If the tester output contains "All checks passed":
+         • Status changes to "All checks passed (nice work)."
+         • Confidence bar jumps to 100% with label "high".
+         • Colored Husky-themed confetti falls across the screen.
+         • A toast appears: "All checks passed. Go Dawgs, and props to your TA."
+
+    3) Toast notifications
+       - Small bottom-center toast bubble used for:
+         • All tests passed (Go Dawgs message).
+         • Compilation failures.
+         • Timeouts.
+         • Network errors.
+       - Also used by secret title chip easter egg (see #7).
+
+    4) Dynamic document title
+       - The browser tab title changes depending on status:
+         • While running: "⏳ Running tests · TCSS 142"
+         • All checks passed: "✅ All checks passed · TCSS 142"
+         • On error: "⚠️ Check your code · TCSS 142"
+         • Otherwise: "TCSS 142 · Project 2 Tester"
+
+    5) Confidence meter
+       - The glowing meter bar animates while tests are running.
+       - After completion it reflects a rough "confidence" percentage:
+         • Higher when all checks passed, lower on compile errors or empty input.
+       - Hover text on the meter:
+         "Rough confidence gauge, not an official score."
+
+    6) Cheer messages based on outcome
+       - Different pools of hints depending on result:
+         • Good run (all checks passed): encouraging notes about surge logic.
+         • Okay / partial: tips about edge cases, rounding, and off-by-one errors.
+         • Error: reminders to check syntax, class name, and local compilation first.
+
+    7) Secret TA credit on the title chip
+       - Double-click the "SurgeTester · Project 2" pill:
+         • Shows toast: "TA dev credits unlocked. This tester was coded by Faiz Ahmed."
+         • Changes footer hint text to: "You got this!"
+
+    8) Code autosave
+       - Editor contents are saved to localStorage under:
+         "tcss142_p2_surgesim_code"
+       - On reload, any previously pasted code is restored automatically.
+
+    9) Keyboard shortcuts
+       - Global shortcuts using Ctrl (Windows/Linux) or Cmd (macOS):
+         • Ctrl/Cmd + Enter → Run tests
+         • Esc → Clear editor and output
+         • Shift + Esc → Clear output only
+         • Ctrl/Cmd + I → Insert template
+         • Ctrl/Cmd + L → Clear editor and output
+         • Ctrl/Cmd + S → Save current code to localStorage
+         • Ctrl/Cmd + O → Load saved code from localStorage
+
+    10) Husky purple blob cursor
+        - A chain of blurred purple blobs follows the cursor around
+          the screen using a trailing animation.
+        - Uses an SVG filter ("husky-blob") to create a gooey glow.
+
+    11) Background traffic layer
+        - Semi-transparent emoji cars (🚗🚕🚙🚐) drive across the background
+          at different lanes and speeds, behind the main UI.
+
+    12) UW-styled background & watermark
+        - Radial gradients in Husky purple/gold palette.
+        - Subtle UW "W" watermark rotated in the corner.
+        - Grid overlay that gives a studio-mockup feel behind the cards.
+
+    13) Status chip
+        - The small chip next to the Run button shows:
+          • Text: Idle / Running / Completed / Compilation failed / etc.
+          • Dot color: neutral, green (ok), yellow (warn), red (error),
+            matching the current tester state.
+
+    14) Template helper
+        - "Insert template" button drops in a minimal SurgeSimulator skeleton,
+          with a hint: "Fill in methods to match the project handout."
+
+    Overall: this is an unofficial helper built and coded by TA Faiz Ahmed,
+    meant to make strict auto-testing feel a little more like a polished app
+    and a little less like a scary compiler wall of text.
+  -->
+  
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="color-scheme" content="light dark" />
   <style>
