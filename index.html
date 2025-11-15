@@ -25,6 +25,7 @@
     }
 
     *{box-sizing:border-box}
+
     body{
       margin:0;
       font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
@@ -34,6 +35,14 @@
         radial-gradient(900px 700px at -10% 20%, rgba(159,122,255,.25), transparent 60%),
         var(--bg);
       overflow-x:hidden;
+      min-height:100vh;
+      position:relative;
+    }
+
+    /* App shell sits above the blob layer */
+    .app-shell{
+      position:relative;
+      z-index:1;
     }
 
     .hero{ text-align:center; padding:60px 20px 20px }
@@ -72,7 +81,7 @@
       background:var(--code-bg); color:var(--code-fg);
       border:0; outline:none;
       font:13.5px/1.55 ui-monospace,monospace;
-      white-space:pre;             /* no soft wrap */
+      white-space:pre;
       overflow-wrap:normal;
     }
 
@@ -132,66 +141,127 @@
 
     .kbd{ font:12px/1; padding:4px 6px; border-radius:6px; background:rgba(255,255,255,.08); border:1px solid var(--panel-border) }
     .shortcuts{ display:grid; gap:6px; font-size:12px; margin-top:10px }
+
+    /* ---------- Husky Purple Blob Cursor Layer ---------- */
+
+    .blob-layer{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      filter:url(#husky-blob);
+      z-index:0;
+      overflow:hidden;
+    }
+
+    .blob-dot{
+      position:absolute;
+      top:0;
+      left:0;
+      border-radius:50%;
+      background:radial-gradient(circle at 30% 20%, #b28cff 0, #6a33d9 40%, #32006e 100%);
+      box-shadow:0 25px 55px rgba(0,0,0,0.85);
+      opacity:0.9;
+      transform:translate3d(-50%, -50%, 0);
+      will-change:transform;
+    }
+
+    .blob-dot:nth-child(1){ width:55px;  height:55px; }
+    .blob-dot:nth-child(2){ width:90px;  height:90px; }
+    .blob-dot:nth-child(3){ width:120px; height:120px; }
+    .blob-dot:nth-child(4){ width:140px; height:140px; }
+    .blob-dot:nth-child(5){ width:100px; height:100px; }
+    .blob-dot:nth-child(6){ width:70px;  height:70px; }
   </style>
 </head>
 <body>
-  <div class="hero">
-    <div class="title">SurgeTester</div>
-    <h1><span class="grad">TCSS 142</span> Project 2 Tester</h1>
-    <p>Paste <b>SurgeSimulator.java</b> to run automated correctness and boundary tests.</p>
-    <p class="credit">Instructor: Professor Xutong Liu · Grader: Faiz Ahmed</p>
+
+  <!-- Blob filter definition -->
+  <svg width="0" height="0" style="position:absolute">
+    <filter id="husky-blob">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="22" result="blur" />
+      <feColorMatrix
+        in="blur"
+        mode="matrix"
+        values="1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                0 0 0 35 -10"
+      />
+    </filter>
+  </svg>
+
+  <!-- Blob cursor layer -->
+  <div class="blob-layer">
+    <div class="blob-dot"></div>
+    <div class="blob-dot"></div>
+    <div class="blob-dot"></div>
+    <div class="blob-dot"></div>
+    <div class="blob-dot"></div>
+    <div class="blob-dot"></div>
   </div>
 
-  <main class="wrap">
-    <section class="card">
-      <div class="section-head">
-        <b>Editor</b>
-        <div class="tools">
-          <button class="tbtn" id="exampleBtn">Insert template</button>
-        </div>
-      </div>
-
-      <div class="codebox">
-        <div class="gutter" id="gutter">1</div>
-        <textarea id="code" spellcheck="false" placeholder="Paste your SurgeSimulator.java here..."></textarea>
-      </div>
-
-      <div class="bar">
-        <button class="btn" id="runBtn">Run Tests</button>
-        <button class="btn secondary" id="clearBtn">Clear</button>
-
-        <span class="chip"><i class="dot" id="dot"></i><span id="statusText">Idle</span></span>
-
-        <div class="meter" id="meter"><div class="fill"></div></div>
-
-        <span class="meta" id="lenMeta"></span>
-      </div>
-    </section>
-
-    <section class="card console">
-      <div class="section-head" style="padding:0 0 10px 0;">
-        <b>Output</b><span class="meta">Shows the last run</span>
-      </div>
-      <div class="screen" id="out">Waiting for input…</div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="foot-card">
-      <div>
-        Need help? Contact <b>Faiz Ahmed</b> (<a href="mailto:faizahm@uw.edu">faizahm@uw.edu</a>)
-        <div class="shortcuts">
-          <div><span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">Enter</span> — run tests</div>
-          <div><span class="kbd">Esc</span> — clear code and output • <span class="kbd">Shift</span> + <span class="kbd">Esc</span> — clear output only</div>
-          <div><span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">I</span> — insert template • <span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">L</span> — clear</div>
-          <div><span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">S</span> — save to browser • <span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">O</span> — load</div>
-        </div>
-      </div>
-      <div>If tests hang, check for infinite loops or very heavy printing.</div>
+  <!-- Main UI -->
+  <div class="app-shell">
+    <div class="hero">
+      <div class="title">SurgeTester</div>
+      <h1><span class="grad">TCSS 142</span> Project 2 Tester</h1>
+      <p>Paste <b>SurgeSimulator.java</b> to run automated correctness and boundary tests.</p>
+      <p class="credit">Instructor: Professor Xutong Liu · Grader: Faiz Ahmed</p>
     </div>
-  </footer>
+
+    <main class="wrap">
+      <section class="card">
+        <div class="section-head">
+          <b>Editor</b>
+          <div class="tools">
+            <button class="tbtn" id="exampleBtn">Insert template</button>
+          </div>
+        </div>
+
+        <div class="codebox">
+          <div class="gutter" id="gutter">1</div>
+          <textarea id="code" spellcheck="false" placeholder="Paste your SurgeSimulator.java here..."></textarea>
+        </div>
+
+        <div class="bar">
+          <button class="btn" id="runBtn">Run Tests</button>
+          <button class="btn secondary" id="clearBtn">Clear</button>
+
+          <span class="chip"><i class="dot" id="dot"></i><span id="statusText">Idle</span></span>
+
+          <div class="meter" id="meter"><div class="fill"></div></div>
+
+          <span class="meta" id="lenMeta"></span>
+        </div>
+      </section>
+
+      <section class="card console">
+        <div class="section-head" style="padding:0 0 10px 0;">
+          <b>Output</b><span class="meta">Shows the last run</span>
+        </div>
+        <div class="screen" id="out">Waiting for input…</div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="foot-card">
+        <div>
+          Need help? Contact <b>Faiz Ahmed</b> (<a href="mailto:faizahm@uw.edu">faizahm@uw.edu</a>)
+          <div class="shortcuts">
+            <div><span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">Enter</span> - run tests</div>
+            <div><span class="kbd">Esc</span> - clear code and output • <span class="kbd">Shift</span> + <span class="kbd">Esc</span> - clear output only</div>
+            <div><span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">I</span> - insert template • <span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">L</span> - clear</div>
+            <div><span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">S</span> - save to browser • <span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">O</span> - load</div>
+          </div>
+        </div>
+        <div>If tests hang, check for infinite loops or very heavy printing.</div>
+      </div>
+    </footer>
+  </div>
 
   <script>
+    /* ---------------- Tester JS ---------------- */
+
     const codeEl   = document.getElementById("code");
     const gutter   = document.getElementById("gutter");
     const runBtn   = document.getElementById("runBtn");
@@ -204,7 +274,6 @@
     const meter    = document.getElementById("meter");
     const LS_KEY   = "tcss142_p2_surgesim_code";
 
-    // --- Utils ---
     function setStatus(kind, text){
       statusTx.textContent = text;
       dot.className = "dot " + (kind || "");
@@ -281,7 +350,6 @@
       }
     }
 
-    // Local Storage
     function saveToLS(){ try{ localStorage.setItem(LS_KEY, codeEl.value) }catch{} }
     function loadFromLS(){
       try{
@@ -290,50 +358,98 @@
       }catch{}
     }
 
-    // --- Events ---
     codeEl.addEventListener("input",()=>{ updateGutter(); updateLen(); saveToLS(); });
     codeEl.addEventListener("scroll",()=>{ gutter.scrollTop = codeEl.scrollTop; });
     clearBtn.addEventListener("click",clearAll);
     example.addEventListener("click",insertTemplate);
     runBtn.addEventListener("click",runTests);
 
-    // Keyboard shortcuts (Windows/Linux Ctrl, macOS Cmd)
     window.addEventListener("keydown", (e)=>{
       const mod = e.ctrlKey || e.metaKey;
 
-      // Run: Ctrl/Cmd + Enter
       if(mod && e.key === "Enter"){
         e.preventDefault(); runTests(); return;
       }
-      // Clear: Esc, or Ctrl/Cmd + L
       if(e.key === "Escape" && !e.shiftKey){
         e.preventDefault(); clearAll(); return;
       }
       if(mod && (e.key.toLowerCase() === "l")){
         e.preventDefault(); clearAll(); return;
       }
-      // Clear output only: Shift + Esc
       if(e.key === "Escape" && e.shiftKey){
         e.preventDefault(); clearOutputOnly(); return;
       }
-      // Insert template: Ctrl/Cmd + I
-      if(mod && e.key.toLowerCase() === "i"){
+      if(mod && (e.key.toLowerCase() === "i")){
         e.preventDefault(); insertTemplate(); return;
       }
-      // Save: Ctrl/Cmd + S
-      if(mod && e.key.toLowerCase() === "s"){
+      if(mod && (e.key.toLowerCase() === "s")){
         e.preventDefault(); saveToLS(); setStatus("ok","Saved"); return;
       }
-      // Load: Ctrl/Cmd + O
-      if(mod && e.key.toLowerCase() === "o"){
+      /* - fixed line here, only one closing parenthesis - */
+      if(mod && (e.key.toLowerCase() === "o")){
         e.preventDefault(); loadFromLS(); setStatus("ok","Loaded"); return;
       }
-      // No Ctrl/Cmd + W binding to avoid closing tab
     });
 
-    // Init
     loadFromLS();
     updateGutter(); updateLen(); setRunning(false);
+
+    /* ---------------- Husky Purple Blob Cursor JS ---------------- */
+
+    (function(){
+      const dots = Array.from(document.querySelectorAll('.blob-dot'));
+      if (!dots.length) return;
+
+      const nodes = dots.map(() => ({
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2
+      }));
+
+      let targetX = window.innerWidth / 2;
+      let targetY = window.innerHeight / 2;
+
+      const speeds = [0.20, 0.16, 0.14, 0.12, 0.10, 0.08];
+
+      function animateBlob(){
+        nodes[0].x += (targetX - nodes[0].x) * speeds[0];
+        nodes[0].y += (targetY - nodes[0].y) * speeds[0];
+
+        for(let i = 1; i < nodes.length; i++){
+          nodes[i].x += (nodes[i-1].x - nodes[i].x) * speeds[i];
+          nodes[i].y += (nodes[i-1].y - nodes[i].y) * speeds[i];
+        }
+
+        nodes.forEach((node, i) => {
+          dots[i].style.transform =
+            'translate3d(' + node.x + 'px,' + node.y + 'px,0) translate3d(-50%,-50%,0)';
+        });
+
+        requestAnimationFrame(animateBlob);
+      }
+
+      window.addEventListener('pointermove', (e)=>{
+        targetX = e.clientX;
+        targetY = e.clientY;
+      });
+
+      window.addEventListener('touchmove', (e)=>{
+        const t = e.touches[0];
+        if(!t) return;
+        targetX = t.clientX;
+        targetY = t.clientY;
+      }, { passive:true });
+
+      window.addEventListener('resize', ()=>{
+        if (!nodes.length) return;
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        targetX = cx;
+        targetY = cy;
+        nodes.forEach(n => { n.x = cx; n.y = cy; });
+      });
+
+      animateBlob();
+    })();
   </script>
 </body>
 </html>
