@@ -7,20 +7,30 @@
   <meta name="color-scheme" content="light dark" />
   <style>
     :root{
-      --bg:#0b1020;
-      --ink:#eaf0ff;
-      --muted:#b5bfdd;
-      --panel:rgba(255,255,255,.05);
-      --panel-border:rgba(255,255,255,.12);
-      --accent:#8d9cff;
-      --accent-2:#a67aff;
+      /* UW palette based theme */
+      --husky-purple:#32006e;
+      --spirit-purple:#4b2e83;
+      --husky-gold:#e8e3d3;
+      --heritage-gold:#85754d;
+      --accent-green:#aadb1e;
+      --accent-teal:#2ad2c9;
+      --accent-pink:#e93cac;
+      --accent-lavender:#c5b4e3;
+
+      --bg:#120428;
+      --ink:#fdfdff;
+      --muted:#c5c9e6;
+      --panel:rgba(13,8,30,.92);
+      --panel-border:rgba(232,227,211,.16);
+      --accent:#b7a57a;
+      --accent-2:#e8e3d3;
       --ok:#2bd67b;
       --warn:#ffcc4d;
       --err:#ff5d5d;
       --code-bg:#101528;
       --code-fg:#e6ebff;
       --radius:16px;
-      --shadow:0 16px 40px rgba(0,0,0,.35);
+      --shadow:0 18px 48px rgba(0,0,0,.6);
       --loader-speed:1.3s;
     }
 
@@ -31,44 +41,159 @@
       font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
       color:var(--ink);
       background:
-        radial-gradient(1200px 800px at 80% -20%, rgba(122,162,255,.25), transparent 60%),
-        radial-gradient(900px 700px at -10% 20%, rgba(159,122,255,.25), transparent 60%),
-        var(--bg);
+        radial-gradient(1200px 900px at 80% -20%, rgba(197,180,227,.35), transparent 60%),
+        radial-gradient(900px 700px at -10% 30%, rgba(42,210,201,.20), transparent 60%),
+        radial-gradient(1200px 900px at 50% 110%, rgba(183,165,122,.3), transparent 65%),
+        radial-gradient(circle at top, var(--spirit-purple) 0%, var(--husky-purple) 55%, #060112 100%);
       overflow-x:hidden;
       min-height:100vh;
       position:relative;
+      color-scheme:dark;
     }
 
-    /* App shell sits above the blob layer */
+    /* Decorative UW grid */
+    .uw-grid-layer{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:-3;
+      background-image:
+        linear-gradient(to right, rgba(232,227,211,.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(232,227,211,.04) 1px, transparent 1px);
+      background-size:40px 40px;
+      mix-blend-mode:soft-light;
+      opacity:.75;
+    }
+
+    /* Subtle W watermark */
+    .w-watermark{
+      position:fixed;
+      right:-28px;
+      bottom:-80px;
+      font-size:220px;
+      font-weight:900;
+      font-family:Georgia,"Times New Roman",serif;
+      color:rgba(232,227,211,.045);
+      letter-spacing:.1em;
+      transform:rotate(-14deg);
+      z-index:0;
+      pointer-events:none;
+    }
+
+    /* App shell sits above the blob and traffic layers */
     .app-shell{
       position:relative;
       z-index:1;
     }
 
-    .hero{ text-align:center; padding:60px 20px 20px }
-    .title{
-      display:inline-block; padding:8px 16px; margin-bottom:10px;
-      border-radius:999px; border:1px solid var(--panel-border);
-      font-size:12px; background:rgba(255,255,255,.08); backdrop-filter:blur(6px)
+    .hero{
+      text-align:center;
+      padding:60px 20px 20px;
     }
-    h1{ margin:14px 0 8px; font-size:clamp(28px,4vw,44px) }
-    .grad{ background:linear-gradient(90deg,var(--accent),var(--accent-2)); -webkit-background-clip:text; color:transparent; font-weight:800 }
-    .credit{ color:var(--muted); font-size:13px }
+    .title{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 16px;
+      margin-bottom:10px;
+      border-radius:999px;
+      border:1px solid rgba(232,227,211,.4);
+      font-size:12px;
+      background:linear-gradient(
+        135deg,
+        rgba(75,46,131,.98),
+        rgba(50,0,110,.96)
+      );
+      color:#ffffff;
+      backdrop-filter:blur(8px);
+      box-shadow:0 14px 38px rgba(0,0,0,.7);
+      cursor:default;
+    }
+    .title-pill-dot{
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:#aadb1e;
+      box-shadow:0 0 10px rgba(170,219,30,.9);
+    }
+    .title-ta-tag{
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid rgba(232,227,211,.65);
+      background:rgba(11,16,32,.85);
+      font-size:11px;
+      color:var(--husky-gold);
+      letter-spacing:.03em;
+      text-transform:uppercase;
+    }
+    h1{
+      margin:14px 0 8px;
+      font-size:clamp(28px,4vw,44px);
+      letter-spacing:.02em;
+    }
+    .grad{
+      background:linear-gradient(90deg,#ffffff,var(--husky-gold));
+      -webkit-background-clip:text;
+      color:transparent;
+      font-weight:800;
+    }
+    .credit{
+      color:var(--muted);
+      font-size:13px;
+    }
 
-    .wrap{ max-width:1100px; margin:auto; padding:20px; display:grid; gap:20px }
-    .card{ background:var(--panel); border:1px solid var(--panel-border); border-radius:var(--radius); box-shadow:var(--shadow); backdrop-filter:blur(10px); overflow:hidden }
-    .section-head{ display:flex; justify-content:space-between; align-items:center; padding:16px 18px 0 }
+    .wrap{
+      max-width:1100px;
+      margin:auto;
+      padding:20px;
+      display:grid;
+      gap:20px;
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid var(--panel-border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+      overflow:hidden;
+    }
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:16px 18px 0;
+    }
     .section-head b{ font-size:14px }
-    .tbtn{ padding:6px 10px; font-size:12px; border:1px solid var(--panel-border); border-radius:8px; background:rgba(255,255,255,.06); color:var(--ink); cursor:pointer }
-    .tbtn:hover{ filter:brightness(1.08) }
+    .tbtn{
+      padding:6px 10px;
+      font-size:12px;
+      border:1px solid var(--panel-border);
+      border-radius:8px;
+      background:rgba(232,227,211,.06);
+      color:var(--ink);
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+    .tbtn:hover{
+      filter:brightness(1.09);
+      box-shadow:0 6px 18px rgba(0,0,0,.4);
+      transform:translateY(-1px);
+    }
 
-    .codebox{ display:grid; grid-template-columns:auto 1fr; border-top:1px solid var(--panel-border); border-bottom:1px solid var(--panel-border) }
+    .codebox{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      border-top:1px solid var(--panel-border);
+      border-bottom:1px solid var(--panel-border);
+    }
     .gutter{
-      background:rgba(255,255,255,.04);
+      background:rgba(255,255,255,.03);
       border-right:1px solid var(--panel-border);
       padding:12px 8px;
       text-align:right;
-      color:#93a2c8;
+      color:#c5c9e6;
       user-select:none;
       white-space:pre;
       overflow:hidden;
@@ -76,71 +201,167 @@
       min-width:42px;
     }
     textarea{
-      width:100%; min-height:420px; resize:vertical;
+      width:100%;
+      min-height:420px;
+      resize:vertical;
       padding:12px 14px;
-      background:var(--code-bg); color:var(--code-fg);
-      border:0; outline:none;
+      background:#101528;
+      color:var(--code-fg);
+      border:0;
+      outline:none;
       font:13.5px/1.55 ui-monospace,monospace;
       white-space:pre;
       overflow-wrap:normal;
     }
 
-    .bar{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:12px 14px }
-    .btn{
-      border:0; border-radius:10px; padding:10px 16px;
-      background:linear-gradient(90deg,var(--accent),var(--accent-2));
-      color:#fff; font-weight:600; cursor:pointer
+    .bar{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      padding:12px 14px;
     }
-    .btn.secondary{ background:rgba(255,255,255,.08); color:var(--ink); border:1px solid var(--panel-border) }
+    .btn{
+      border:0;
+      border-radius:10px;
+      padding:10px 16px;
+      background:linear-gradient(90deg,var(--husky-gold),var(--accent));
+      color:#20113f;
+      font-weight:600;
+      cursor:pointer;
+      box-shadow:0 12px 28px rgba(0,0,0,.6);
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+    .btn.secondary{
+      background:rgba(255,255,255,.08);
+      color:var(--ink);
+      border:1px solid var(--panel-border);
+      box-shadow:none;
+    }
+    .btn:hover{
+      filter:brightness(1.03);
+      transform:translateY(-1px);
+      box-shadow:0 16px 34px rgba(0,0,0,.65);
+    }
+    .btn:active{
+      transform:translateY(0);
+      box-shadow:0 8px 20px rgba(0,0,0,.5);
+    }
 
-    .chip{ display:inline-flex; align-items:center; gap:6px; padding:6px 10px; font-size:12px; border:1px solid var(--panel-border); border-radius:10px; background:rgba(255,255,255,.06) }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      font-size:12px;
+      border:1px solid var(--panel-border);
+      border-radius:10px;
+      background:rgba(255,255,255,.06);
+    }
     .dot{ width:8px; height:8px; border-radius:50%; background:var(--muted) }
-    .dot.ok{ background:var(--ok) } .dot.warn{ background:var(--warn) } .dot.err{ background:var(--err) }
+    .dot.ok{ background:var(--ok) }
+    .dot.warn{ background:var(--warn) }
+    .dot.err{ background:var(--err) }
 
-    .meter{ position:relative; flex:1; min-width:120px; height:6px; border-radius:999px; overflow:hidden; background:rgba(255,255,255,.08) }
+    .meter{
+      position:relative;
+      flex:1;
+      min-width:120px;
+      height:6px;
+      border-radius:999px;
+      overflow:hidden;
+      background:rgba(255,255,255,.08);
+    }
     .meter .fill{
-      position:absolute; inset:0;
-      width:38%;
+      position:absolute;
+      inset:0;
+      width:20%;
       opacity:.9;
       border-radius:999px;
       background:
         linear-gradient(90deg,
           rgba(255,255,255,.0) 0%,
           rgba(255,255,255,.25) 35%,
-          rgba(255,255,255,.0) 70%) ,
-        linear-gradient(90deg,var(--accent),var(--accent-2));
+          rgba(255,255,255,.0) 70%),
+        linear-gradient(90deg,var(--husky-gold),var(--accent));
       background-size:220% 100%, 100% 100%;
       background-position:-200% 0, 0 0;
-      animation: shimmer var(--loader-speed) linear infinite;
-      animation-play-state: paused;
-      transform: translateX(-120%);
+      animation:shimmer var(--loader-speed) linear infinite;
+      animation-play-state:paused;
+      transform:translateX(-120%);
     }
-    .meter.running .fill{ animation-play-state: running; transform: translateX(0) }
+    .meter.running .fill{
+      animation-play-state:running;
+      transform:translateX(0);
+    }
     @keyframes shimmer{
       0%   { background-position:-200% 0, 0 0 }
-      100% { background-position:  200% 0, 0 0 }
+      100% { background-position: 200% 0, 0 0 }
     }
     @media (prefers-reduced-motion: reduce){
-      .meter .fill{ animation:none; background:linear-gradient(90deg,var(--accent),var(--accent-2)); opacity:.6 }
+      .meter .fill{
+        animation:none;
+        background:linear-gradient(90deg,var(--husky-gold),var(--accent));
+        opacity:.7;
+      }
       .meter.running .fill{ opacity:.95 }
     }
 
-    .meta{ font-size:12px; color:var(--muted) }
+    .meta{
+      font-size:12px;
+      color:var(--muted);
+    }
 
     .console{ padding:14px }
     .screen{
-      background:var(--code-bg); color:var(--code-fg);
+      background:#101528;
+      color:var(--code-fg);
       border:1px solid rgba(255,255,255,.1);
-      border-radius:10px; padding:14px; min-height:120px;
-      font:13.5px/1.55 ui-monospace,monospace; white-space:pre-wrap
+      border-radius:10px;
+      padding:14px;
+      min-height:120px;
+      font:13.5px/1.55 ui-monospace,monospace;
+      white-space:pre-wrap;
     }
 
-    footer{ max-width:1100px; margin:40px auto; padding:0 20px; color:var(--muted); font-size:14px }
-    .foot-card{ background:rgba(255,255,255,.04); border:1px solid var(--panel-border); border-radius:12px; padding:14px 16px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px }
-    a{ color:var(--accent); text-decoration:none } a:hover{ text-decoration:underline }
+    footer{
+      max-width:1100px;
+      margin:40px auto;
+      padding:0 20px;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .foot-card{
+      background:rgba(13,8,30,.92);
+      border:1px solid var(--panel-border);
+      border-radius:12px;
+      padding:14px 16px;
+      display:flex;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    a{
+      color:var(--husky-gold);
+      text-decoration:none;
+    }
+    a:hover{ text-decoration:underline }
 
-    .kbd{ font:12px/1; padding:4px 6px; border-radius:6px; background:rgba(255,255,255,.08); border:1px solid var(--panel-border) }
-    .shortcuts{ display:grid; gap:6px; font-size:12px; margin-top:10px }
+    .kbd{
+      font:12px/1;
+      padding:4px 6px;
+      border-radius:6px;
+      background:rgba(255,255,255,.08);
+      border:1px solid var(--panel-border);
+    }
+    .shortcuts{
+      display:grid;
+      gap:6px;
+      font-size:12px;
+      margin-top:10px;
+    }
 
     /* ---------- Husky Purple Blob Cursor Layer ---------- */
 
@@ -158,7 +379,7 @@
       top:0;
       left:0;
       border-radius:50%;
-      background:radial-gradient(circle at 30% 20%, #b28cff 0, #6a33d9 40%, #32006e 100%);
+      background:radial-gradient(circle at 30% 20%, #c5b4e3 0, #6a33d9 40%, #32006e 100%);
       box-shadow:0 25px 55px rgba(0,0,0,0.85);
       opacity:0.9;
       transform:translate3d(-50%, -50%, 0);
@@ -171,9 +392,72 @@
     .blob-dot:nth-child(4){ width:140px; height:140px; }
     .blob-dot:nth-child(5){ width:100px; height:100px; }
     .blob-dot:nth-child(6){ width:70px;  height:70px; }
+
+    /* ---------- Background traffic layer ---------- */
+
+    .traffic-layer{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:-1;
+      opacity:.18;
+    }
+    .traffic-car{
+      position:absolute;
+      font-size:22px;
+      animation:drive 16s linear infinite;
+    }
+    @keyframes drive{
+      0%   { transform: translateX(-12vw); }
+      100% { transform: translateX(112vw); }
+    }
+
+    /* ---------- Confetti + toast layer ---------- */
+
+    #confetti-layer{
+      pointer-events:none;
+      position:fixed;
+      inset:0;
+      overflow:hidden;
+      z-index:3;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:24px;
+      transform:translateX(-50%) translateY(120%);
+      background:var(--spirit-purple);
+      color:#ffffff;
+      border-radius:999px;
+      padding:10px 18px;
+      border:1px solid var(--husky-gold);
+      box-shadow:0 16px 40px rgba(0,0,0,.6);
+      font-size:13px;
+      opacity:0;
+      transition:opacity .25s ease-out, transform .25s ease-out;
+      z-index:4;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
+    }
+    .toast-dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:var(--husky-gold);
+    }
   </style>
 </head>
 <body>
+
+  <!-- UW grid and watermark -->
+  <div class="uw-grid-layer" aria-hidden="true"></div>
+  <div class="w-watermark" aria-hidden="true">W</div>
 
   <!-- Blob filter definition -->
   <svg width="0" height="0" style="position:absolute">
@@ -200,13 +484,31 @@
     <div class="blob-dot"></div>
   </div>
 
+  <!-- Traffic layer -->
+  <div class="traffic-layer" aria-hidden="true"></div>
+
+  <!-- Confetti layer -->
+  <div id="confetti-layer" aria-hidden="true"></div>
+
+  <!-- Toast -->
+  <div id="dawgsToast" class="toast" role="status" aria-live="polite">
+    <span class="toast-dot"></span>
+    <span id="toastText">Go Dawgs!</span>
+  </div>
+
   <!-- Main UI -->
   <div class="app-shell">
     <div class="hero">
-      <div class="title">SurgeTester</div>
+      <div class="title" id="titleChip" title="Double click for a tiny secret.">
+        <span class="title-pill-dot"></span>
+        <span>SurgeTester</span>
+        <span class="title-ta-tag">Project 2</span>
+      </div>
       <h1><span class="grad">TCSS 142</span> Project 2 Tester</h1>
       <p>Paste <b>SurgeSimulator.java</b> to run automated correctness and boundary tests.</p>
-      <p class="credit">Instructor: Professor Xutong Liu · Grader: Faiz Ahmed</p>
+      <p class="credit" id="heroMood">
+        Instructor: Professor Xutong Liu · Built and maintained by TA Faiz Ahmed
+      </p>
     </div>
 
     <main class="wrap">
@@ -214,7 +516,9 @@
         <div class="section-head">
           <b>Editor</b>
           <div class="tools">
-            <button class="tbtn" id="exampleBtn">Insert template</button>
+            <button class="tbtn" id="exampleBtn">
+              <span>📋</span><span>Insert template</span>
+            </button>
           </div>
         </div>
 
@@ -224,13 +528,20 @@
         </div>
 
         <div class="bar">
-          <button class="btn" id="runBtn">Run Tests</button>
+          <button class="btn" id="runBtn">
+            <span>▶</span><span>Run Tests</span>
+          </button>
           <button class="btn secondary" id="clearBtn">Clear</button>
 
-          <span class="chip"><i class="dot" id="dot"></i><span id="statusText">Idle</span></span>
+          <span class="chip">
+            <i class="dot" id="dot"></i>
+            <span id="statusText">Idle</span>
+          </span>
 
           <div class="meter" id="meter"><div class="fill"></div></div>
 
+          <span class="meta" id="confidenceMeta"></span>
+          <span class="meta" id="cheerMeta"></span>
           <span class="meta" id="lenMeta"></span>
         </div>
       </section>
@@ -246,7 +557,12 @@
     <footer>
       <div class="foot-card">
         <div>
-          Need help? Contact <b>Faiz Ahmed</b> (<a href="mailto:faizahm@uw.edu">faizahm@uw.edu</a>)
+          <div style="margin-bottom:6px;">
+            This tester is an unofficial helper tool designed and coded by TA <b>Faiz Ahmed</b> for TCSS 142.
+          </div>
+          <div>
+            Need help? Contact <b>Faiz Ahmed</b> (<a href="mailto:faizahm@uw.edu">faizahm@uw.edu</a>)
+          </div>
           <div class="shortcuts">
             <div><span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">Enter</span> - run tests</div>
             <div><span class="kbd">Esc</span> - clear code and output • <span class="kbd">Shift</span> + <span class="kbd">Esc</span> - clear output only</div>
@@ -254,7 +570,7 @@
             <div><span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">S</span> - save to browser • <span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">O</span> - load</div>
           </div>
         </div>
-        <div>If tests hang, check for infinite loops or very heavy printing.</div>
+        <div id="footHint">If tests hang, check for infinite loops or very heavy printing.</div>
       </div>
     </footer>
   </div>
@@ -272,12 +588,62 @@
     const lenMeta  = document.getElementById("lenMeta");
     const example  = document.getElementById("exampleBtn");
     const meter    = document.getElementById("meter");
+    const confidenceMeta = document.getElementById("confidenceMeta");
+    const cheerMeta = document.getElementById("cheerMeta");
+    const fillEl   = document.querySelector(".meter .fill");
+    const titleChip = document.getElementById("titleChip");
+    const heroMood  = document.getElementById("heroMood");
+    const toastEl   = document.getElementById("dawgsToast");
+    const toastText = document.getElementById("toastText");
+    const footHint  = document.getElementById("footHint");
+
     const LS_KEY   = "tcss142_p2_surgesim_code";
+
+    const cheerMessagesGood = [
+      "Looks like surge logic is in great shape.",
+      "Auto tester is happy. So is your future grade.",
+      "Nice. Try a few weird edge cases too.",
+      "All green lights for this ride."
+    ];
+    const cheerMessagesOkay = [
+      "Closer than you think. Read the diffs carefully.",
+      "Fix a few details and this will be solid.",
+      "Edge cases are where the points hide.",
+      "Look for off by one or rounding issues."
+    ];
+    const cheerMessagesError = [
+      "Start with the first error at the top.",
+      "Check your class name and file name first.",
+      "Tiny syntax bugs often cause big wall of red.",
+      "Try compiling locally before running here."
+    ];
+
+    function randomFrom(arr){
+      return arr[Math.floor(Math.random()*arr.length)];
+    }
+
+    function setDocTitle(mode){
+      if(mode === "running") document.title = "⏳ Running tests · TCSS 142";
+      else if(mode === "ok") document.title = "✅ All checks passed · TCSS 142";
+      else if(mode === "err") document.title = "⚠️ Check your code · TCSS 142";
+      else document.title = "TCSS 142 · Project 2 Tester";
+    }
 
     function setStatus(kind, text){
       statusTx.textContent = text;
       dot.className = "dot " + (kind || "");
+      if(kind === "ok") setDocTitle("ok");
+      else if(kind === "err") setDocTitle("err");
+      else if(kind === "warn" && text === "Running") setDocTitle("running");
+      else setDocTitle("idle");
     }
+
+    function setConfidence(pct, label){
+      if(!fillEl || !confidenceMeta) return;
+      fillEl.style.width = pct + "%";
+      confidenceMeta.textContent = label ? "Confidence: " + label : "";
+    }
+
     function updateGutter(){
       const lines = (codeEl.value.match(/\n/g)||[]).length + 1;
       let s = "";
@@ -287,47 +653,105 @@
     }
     function updateLen(){
       const bytes = new TextEncoder().encode(codeEl.value).length;
-      lenMeta.textContent = bytes ? `Size: ${bytes.toLocaleString()} bytes` : "";
+      lenMeta.textContent = bytes ? "Size: " + bytes.toLocaleString() + " bytes" : "";
     }
     function setRunning(on){
       if(on) meter.classList.add("running");
       else   meter.classList.remove("running");
     }
+
+    function showToast(msg){
+      if(!toastEl) return;
+      toastText.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(()=>{
+        toastEl.classList.remove("show");
+      }, 2600);
+    }
+
     function clearAll(){
       if(codeEl.value.trim()){
         const ok = confirm("Clear editor and output?");
         if(!ok) return;
       }
       codeEl.value = "";
-      updateGutter(); updateLen();
+      updateGutter();
+      updateLen();
       out.textContent = "Waiting for input…";
       setStatus("", "Idle");
+      cheerMeta.textContent = "";
+      setConfidence(0, "");
       setRunning(false);
       saveToLS();
     }
     function clearOutputOnly(){
       out.textContent = "Waiting for input…";
       setStatus("", "Idle");
+      cheerMeta.textContent = "";
+      setConfidence(0, "");
       setRunning(false);
     }
     function insertTemplate(){
       const tpl = `public class SurgeSimulator {
+    // Add your fields, constants, and methods here.
 }`;
       if(codeEl.value.trim() && !confirm("Replace existing code with a template?")) return;
       codeEl.value = tpl;
-      updateGutter(); updateLen();
+      updateGutter();
+      updateLen();
       saveToLS();
+      setStatus("ok","Template inserted");
+      cheerMeta.textContent = "Fill in methods to match the project handout.";
     }
+
+    function burstConfetti(){
+      const layer = document.getElementById("confetti-layer");
+      if(!layer) return;
+      for(let i = 0; i < 45; i++){
+        const piece = document.createElement("div");
+        piece.style.position = "absolute";
+        piece.style.width = "6px";
+        piece.style.height = "14px";
+        piece.style.borderRadius = "3px";
+        const colors = ["#e8e3d3","#b7a57a","#4b2e83","#c5b4e3"];
+        piece.style.background = colors[i % colors.length];
+        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.top = "-24px";
+        piece.style.opacity = "0.95";
+        const duration = 1200 + Math.random() * 800;
+        const translateX = (Math.random() * 2 - 1) * 80;
+        piece.animate([
+          { transform:"translate3d(0,0,0) rotate(0deg)", opacity:1 },
+          { transform:"translate3d("+translateX+"px,100vh,0) rotate("+(360+Math.random()*360)+"deg)", opacity:0 }
+        ], { duration, easing:"cubic-bezier(.17,.67,.34,1.01)" });
+        setTimeout(() => piece.remove(), duration + 80);
+        layer.appendChild(piece);
+      }
+    }
+
     async function runTests(){
       const code = codeEl.value.trim();
       if(!code){
         setStatus("warn","No code");
+        setConfidence(0, "n/a");
+        cheerMeta.textContent = "Paste your SurgeSimulator.java first.";
         out.textContent = "Paste your SurgeSimulator.java first.";
         return;
       }
-      setStatus("warn","Running"); setRunning(true);
+      setStatus("warn","Running");
+      setConfidence(45, "estimating");
+      setRunning(true);
+      cheerMeta.textContent = "";
       out.textContent = "Compiling and running…";
       saveToLS();
+
+      const hour = new Date().getHours();
+      if(hour >= 23 || hour < 6){
+        heroMood.textContent = "Late night surge testing squad online. Tool by TA Faiz Ahmed.";
+      } else {
+        heroMood.textContent = "Instructor: Professor Xutong Liu · Built and maintained by TA Faiz Ahmed";
+      }
 
       try{
         const res  = await fetch("/run", {
@@ -338,13 +762,33 @@
         const text = await res.text();
         out.textContent = text;
 
-        if (text.includes("All checks passed")) setStatus("ok","All checks passed");
-        else if (text.includes("Compilation failed")) setStatus("err","Compilation failed");
-        else if (text.toLowerCase().includes("timed out")) setStatus("warn","Timed out");
-        else setStatus("warn","Completed");
+        if (text.includes("All checks passed")) {
+          setStatus("ok","All checks passed (nice work).");
+          setConfidence(100, "high");
+          cheerMeta.textContent = randomFrom(cheerMessagesGood);
+          burstConfetti();
+          showToast("All checks passed. Go Dawgs, and props to your TA.");
+        } else if (text.includes("Compilation failed")) {
+          setStatus("err","Compilation failed");
+          setConfidence(20, "low");
+          cheerMeta.textContent = randomFrom(cheerMessagesError);
+          showToast("Check your syntax and class name.");
+        } else if (text.toLowerCase().includes("timed out")) {
+          setStatus("warn","Timed out");
+          setConfidence(50, "uncertain");
+          cheerMeta.textContent = "If it hangs, look for infinite loops or input waiting.";
+          showToast("Tester hit a timeout.");
+        } else {
+          setStatus("warn","Completed");
+          setConfidence(65, "medium");
+          cheerMeta.textContent = randomFrom(cheerMessagesOkay);
+        }
       }catch{
         out.textContent = "Network error.";
         setStatus("err","Network error");
+        setConfidence(0, "n/a");
+        cheerMeta.textContent = "Check your connection or try again in a bit.";
+        showToast("Could not reach the tester.");
       }finally{
         setRunning(false);
       }
@@ -354,50 +798,79 @@
     function loadFromLS(){
       try{
         const v = localStorage.getItem(LS_KEY);
-        if(v != null){ codeEl.value = v; updateGutter(); updateLen(); }
+        if(v != null){
+          codeEl.value = v;
+          updateGutter();
+          updateLen();
+        }
       }catch{}
     }
 
-    codeEl.addEventListener("input",()=>{ updateGutter(); updateLen(); saveToLS(); });
-    codeEl.addEventListener("scroll",()=>{ gutter.scrollTop = codeEl.scrollTop; });
+    codeEl.addEventListener("input",()=>{
+      updateGutter();
+      updateLen();
+      saveToLS();
+    });
+    codeEl.addEventListener("scroll",()=>{
+      gutter.scrollTop = codeEl.scrollTop;
+    });
     clearBtn.addEventListener("click",clearAll);
     example.addEventListener("click",insertTemplate);
     runBtn.addEventListener("click",runTests);
 
+    // Keyboard shortcuts (Windows or Linux Ctrl, macOS Cmd)
     window.addEventListener("keydown", (e)=>{
       const mod = e.ctrlKey || e.metaKey;
 
       if(mod && e.key === "Enter"){
-        e.preventDefault(); runTests(); return;
+        e.preventDefault();
+        runTests();
+        return;
       }
       if(e.key === "Escape" && !e.shiftKey){
-        e.preventDefault(); clearAll(); return;
+        e.preventDefault();
+        clearAll();
+        return;
       }
       if(mod && (e.key.toLowerCase() === "l")){
-        e.preventDefault(); clearAll(); return;
+        e.preventDefault();
+        clearAll();
+        return;
       }
       if(e.key === "Escape" && e.shiftKey){
-        e.preventDefault(); clearOutputOnly(); return;
+        e.preventDefault();
+        clearOutputOnly();
+        return;
       }
       if(mod && (e.key.toLowerCase() === "i")){
-        e.preventDefault(); insertTemplate(); return;
+        e.preventDefault();
+        insertTemplate();
+        return;
       }
       if(mod && (e.key.toLowerCase() === "s")){
-        e.preventDefault(); saveToLS(); setStatus("ok","Saved"); return;
+        e.preventDefault();
+        saveToLS();
+        setStatus("ok","Saved");
+        return;
       }
-      /* - fixed line here, only one closing parenthesis - */
       if(mod && (e.key.toLowerCase() === "o")){
-        e.preventDefault(); loadFromLS(); setStatus("ok","Loaded"); return;
+        e.preventDefault();
+        loadFromLS();
+        setStatus("ok","Loaded");
+        return;
       }
     });
 
     loadFromLS();
-    updateGutter(); updateLen(); setRunning(false);
+    updateGutter();
+    updateLen();
+    setRunning(false);
+    setConfidence(0, "");
 
     /* ---------------- Husky Purple Blob Cursor JS ---------------- */
 
     (function(){
-      const dots = Array.from(document.querySelectorAll('.blob-dot'));
+      const dots = Array.from(document.querySelectorAll(".blob-dot"));
       if (!dots.length) return;
 
       const nodes = dots.map(() => ({
@@ -408,7 +881,7 @@
       let targetX = window.innerWidth / 2;
       let targetY = window.innerHeight / 2;
 
-      const speeds = [0.20, 0.16, 0.14, 0.12, 0.10, 0.08];
+      const speeds = [0.22, 0.18, 0.16, 0.14, 0.12, 0.10];
 
       function animateBlob(){
         nodes[0].x += (targetX - nodes[0].x) * speeds[0];
@@ -421,25 +894,25 @@
 
         nodes.forEach((node, i) => {
           dots[i].style.transform =
-            'translate3d(' + node.x + 'px,' + node.y + 'px,0) translate3d(-50%,-50%,0)';
+            "translate3d(" + node.x + "px," + node.y + "px,0) translate3d(-50%,-50%,0)";
         });
 
         requestAnimationFrame(animateBlob);
       }
 
-      window.addEventListener('pointermove', (e)=>{
+      window.addEventListener("pointermove", (e)=>{
         targetX = e.clientX;
         targetY = e.clientY;
       });
 
-      window.addEventListener('touchmove', (e)=>{
+      window.addEventListener("touchmove", (e)=>{
         const t = e.touches[0];
         if(!t) return;
         targetX = t.clientX;
         targetY = t.clientY;
       }, { passive:true });
 
-      window.addEventListener('resize', ()=>{
+      window.addEventListener("resize", ()=>{
         if (!nodes.length) return;
         const cx = window.innerWidth / 2;
         const cy = window.innerHeight / 2;
@@ -450,6 +923,37 @@
 
       animateBlob();
     })();
+
+    /* ---------------- Background traffic JS ---------------- */
+
+    (function spawnTraffic(){
+      const layer = document.querySelector(".traffic-layer");
+      if (!layer) return;
+      const lanes = [22, 38, 56, 74];
+      const emojis = ["🚗","🚕","🚙","🚐"];
+      for (let i = 0; i < lanes.length; i++) {
+        const car = document.createElement("div");
+        car.className = "traffic-car";
+        car.textContent = emojis[i % emojis.length];
+        car.style.top = lanes[i] + "vh";
+        car.style.animationDelay = (-Math.random()*16) + "s";
+        car.style.opacity = 0.6 + Math.random()*0.2;
+        layer.appendChild(car);
+      }
+    })();
+
+    /* ---------------- Tiny easter eggs ---------------- */
+
+    // Double click on SurgeTester chip
+    titleChip.addEventListener("dblclick", ()=>{
+      showToast("TA dev credits unlocked. This tester was coded by Faiz Ahmed.");
+      footHint.textContent = "You got this!";
+    });
+
+    // Little hint switch on hover of meter
+    meter.addEventListener("mouseenter", ()=>{
+      meter.title = "Rough confidence gauge, not an official score.";
+    });
   </script>
 </body>
 </html>
